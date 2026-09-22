@@ -1,0 +1,31 @@
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+body {
+  background: var(--db-paper, #fff);
+  color: var(--db-dark, #111);
+}
+
+a {
+  color: var(--db-primary, #2f5eff);
+}
+a:hover {
+  color: var(--db-accent-700, #b45309);
+}
+
+::-webkit-scrollbar {
+  width: 9px;
+  height: 9px;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--db-line, #ddd);
+  border-radius: 5px;
+}

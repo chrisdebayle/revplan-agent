@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="_ds/chris-debayle-brand-components-ba138143-d322-4d92-9e76-1c25e1a30713/_ds_bundle.css">
+  <link rel="stylesheet" href="_ds/chris-debayle-brand-components-ba138143-d322-4d92-9e76-1c25e1a30713/styles.css">
+  <script src="_ds/chris-debayle-brand-components-ba138143-d322-4d92-9e76-1c25e1a30713/_ds_bundle.js"></script>
+  <style>
+    body{margin:0}
+    a{color:var(--db-primary)}
+    a:hover{color:var(--db-accent-700)}
+    ::-webkit-scrollbar{width:9px;height:9px}
+    ::-webkit-scrollbar-thumb{background:var(--db-line);border-radius:5px}
+  </style>
+</helmet>
+<x-import component-from-global-scope="ChrisDebayleBrandComponents.SpineFrame" hint-size="100%,100vh">
+<div style="height:100vh;display:flex;flex-direction:column;font-family:var(--db-font-body);background:var(--db-paper);overflow:hidden">
+
+  <div style="height:64px;flex:none;display:flex;align-items:center;justify-content:space-between;padding:0 22px;border-bottom:1px solid var(--db-line);gap:20px">
+    <div style="display:flex;align-items:baseline;gap:12px;min-width:0">
+      <span style="font-family:var(--db-font-display);font-weight:700;font-size:17px;color:var(--db-dark);white-space:nowrap">Revenue Plan OS</span>
+    </div>
+    <div style="flex:none;width:450px;display:flex;justify-content:center"><x-import component-from-global-scope="ChrisDebayleBrandComponents.StepLadder" steps="{{ stageSteps }}" active-index="{{ stageIndex }}" hint-size="450px,32px"></x-import></div>
+    <div style="display:flex;align-items:center;gap:10px;flex:none;white-space:nowrap">
+      <button onClick="{{ toggleFw }}" style="white-space:nowrap;font-family:var(--db-font-display);font-weight:600;font-size:11.5px;letter-spacing:.03em;padding:7px 13px;border-radius:20px;border:1px solid var(--db-line);background:transparent;color:var(--db-ink-soft);cursor:pointer" style-hover="border-color:var(--db-primary);color:var(--db-primary)">Frameworks</button>
+      <button onClick="{{ toggleCtx }}" style="white-space:nowrap;font-family:var(--db-font-display);font-weight:600;font-size:11.5px;letter-spacing:.03em;padding:7px 13px;border-radius:20px;border:1px solid var(--db-line);background:transparent;color:var(--db-ink-soft);cursor:pointer" style-hover="border-color:var(--db-primary);color:var(--db-primary)">Context Summary</button>
+    </div>
+  </div>
+
+  <div style="flex:1;display:flex;min-height:0">
+
+    <div style="width:400px;flex:none;display:flex;flex-direction:column;border-right:1px solid var(--db-line);min-height:0">
+
+      <div style="display:flex;gap:6px;padding:14px 16px;border-bottom:1px solid var(--db-line);flex:none">
+        <button onClick="{{ setModeInterview }}" style="{{ modeInterviewStyle }}">Interview</button>
+        <button onClick="{{ setModeInternal }}" style="{{ modeInternalStyle }}">Internal</button>
+      </div>
+
+      <div style="flex:1;overflow-y:auto;padding:18px 16px;display:flex;flex-direction:column;gap:14px;min-height:0">
+
+        <sc-for list="{{ messages }}" as="msg" hint-placeholder-count="4">
+
+          <sc-if value="{{ msg.isAgentText }}" hint-placeholder-val="{{ false }}">
+            <div style="max-width:88%;background:var(--db-light);border-radius:var(--db-radius);padding:11px 14px;font-size:13.5px;line-height:1.5;color:var(--db-ink-soft)">{{ msg.text }}</div>
+          </sc-if>
+
+          <sc-if value="{{ msg.isUserText }}" hint-placeholder-val="{{ false }}">
+            <div style="max-width:88%;align-self:flex-end;background:var(--db-primary);border-radius:var(--db-radius);padding:11px 14px;font-size:13.5px;line-height:1.5;color:#fff">{{ msg.text }}</div>
+          </sc-if>
+
+          <sc-if value="{{ msg.isIntake }}" hint-placeholder-val="{{ false }}">
+            <div style="background:#fff;border:1px solid var(--db-line);border-radius:var(--db-radius);padding:14px 16px">
+              <div style="font-family:var(--db-font-display);font-weight:600;font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--db-primary);margin-bottom:10px">Intake Block · §2.1</div>
+              <div style="display:grid;grid-template-columns:auto 1fr;gap:6px 12px">
+                <sc-for list="{{ msg.fields }}" as="f" hint-placeholder-count="6">
+                  <span style="font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--db-muted);white-space:nowrap;padding-top:1px">{{ f.label }}</span>
+                  <span style="font-size:13px;color:var(--db-dark)">{{ f.value }}</span>
+                </sc-for>
+              </div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ msg.isAttachment }}" hint-placeholder-val="{{ false }}">
+            <div style="background:#fff;border:1px solid var(--db-line);border-radius:var(--db-radius);padding:12px 14px">
+              <div style="font-family:var(--db-font-display);font-weight:600;font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--db-primary);margin-bottom:8px">Reference material attached</div>
+              <sc-for list="{{ msg.files }}" as="file" hint-placeholder-count="2">
+                <div style="display:flex;align-items:center;gap:8px;padding:5px 0">
+                  <span style="font-family:var(--db-font-display);font-weight:700;font-size:9px;letter-spacing:.02em;color:#fff;background:var(--db-muted);border-radius:4px;padding:2px 5px;flex:none">{{ file.ext }}</span>
+                  <span style="font-size:12.5px;color:var(--db-dark);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ file.name }}</span>
+                </div>
+              </sc-for>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ msg.isProbe }}" hint-placeholder-val="{{ false }}">
+            <div style="background:#fff;border:1px solid var(--db-line);border-radius:var(--db-radius);padding:14px 16px">
+              <div style="font-family:var(--db-font-display);font-weight:600;font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--db-primary);margin-bottom:10px">Gap Probe · §2.2</div>
+              <sc-for list="{{ msg.qas }}" as="qa" hint-placeholder-count="4">
+                <div style="padding:8px 0;border-top:1px solid var(--db-line)" style-first-child="border-top:none;padding-top:0">
+                  <div style="font-size:12.5px;font-weight:600;color:var(--db-dark);margin-bottom:4px">{{ qa.q }}</div>
+                  <div style="font-size:12.5px;color:var(--db-ink-soft);line-height:1.5">{{ qa.a }}</div>
+                </div>
+              </sc-for>
+            </div>
+          </sc-if>
+
+        </sc-for>
+
+      </div>
+
+      <div style="flex:none;border-top:1px solid var(--db-line);padding:12px 14px;display:flex;gap:8px;align-items:flex-end">
+        <input type="file" ref="{{ fileInputRef }}" onChange="{{ handleFiles }}" multiple="{{ true }}" accept=".md,.markdown,.pdf,.txt,.doc,.docx,.vtt,.srt" style="display:none">
+        <button onClick="{{ triggerFilePicker }}" title="Attach reference material — Markdown, PDF, call transcripts" style="flex:none;width:34px;height:34px;border:1px solid var(--db-line);border-radius:8px;background:transparent;color:var(--db-muted);cursor:pointer;display:flex;align-items:center;justify-content:center" style-hover="border-color:var(--db-primary);color:var(--db-primary)">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05l-9.19 9.19a5 5 0 01-7.07-7.07l9.19-9.19a3.5 3.5 0 015 5l-9.2 9.19a2 2 0 01-2.82-2.83l8.49-8.48"></path></svg>
+        </button>
+        <textarea ref="{{ inputRef }}" value="{{ draft }}" onChange="{{ setDraft }}" placeholder="Ask for a revision, e.g. &quot;tighten §3&quot;…" rows="1" style="flex:1;resize:none;border:1px solid var(--db-line);border-radius:8px;padding:9px 11px;font-family:var(--db-font-body);font-size:13px;color:var(--db-dark);outline:none" style-focus="border-color:var(--db-primary)"></textarea>
+        <button onClick="{{ send }}" style="flex:none;background:var(--db-primary);color:#fff;border:none;border-radius:8px;padding:0 16px;height:34px;font-family:var(--db-font-display);font-weight:600;font-size:12.5px;cursor:pointer" style-hover="background:var(--db-accent-700)">Send</button>
+      </div>
+    </div>
+
+    <div style="flex:1;overflow-y:auto;min-height:0;padding:34px 52px 80px;position:relative">
+      <div style="max-width:760px;margin:0 auto">
+
+        <div style="border-bottom:1px solid var(--db-line);padding-bottom:16px;margin-bottom:6px">
+          <div style="font-family:var(--db-font-display);font-weight:700;font-size:26px;color:var(--db-dark);letter-spacing:-.005em">Revenue Plan — Snowflake</div>
+          <div style="font-size:12.5px;color:var(--db-muted);margin-top:6px">Account Executive, New-in-Seat · Interview Mode · Draft v2 · 1,780 / 2,200 words</div>
+          <div style="font-size:11.5px;color:var(--db-muted);margin-top:10px">Evidence: <sup style="color:var(--db-primary);font-weight:700">S</sup> Sourced · <sup style="color:var(--db-accent-700);font-weight:700">D</sup> Derived · <sup style="color:var(--db-accent-800);font-weight:700">A</sup> Assumed · <sup style="color:var(--db-fail);font-weight:700">RD</sup> Requires Data — hover any tag for detail.</div>
+        </div>
+
+        <div style="position:relative">
+          <button onClick="{{ revise1 }}" title="Request revision" style="position:absolute;top:2px;right:0;font-size:11px;color:var(--db-muted);background:none;border:1px solid var(--db-line);border-radius:14px;padding:4px 10px;cursor:pointer" style-hover="color:var(--db-primary);border-color:var(--db-primary)">Revise</button>
+          <x-import component-from-global-scope="ChrisDebayleBrandComponents.Section" number="01" label="EXECUTIVE SUMMARY" title="Land, reactivate, then expand" hint-size="100%,auto">
+            <p style="font-size:14.5px;line-height:1.68;color:var(--db-ink-soft)">
+              Year 1 quota is unassigned pending the ramp schedule<sup title="Requires data — ramped quota schedule from sales operations, not yet issued" style="color:var(--db-fail);font-weight:700;cursor:help">RD</sup> — Phase 1 treats setting it as a deliverable, not a given. Land-and-expand into enterprise accounts running fragmented, multi-vendor data warehouses is the wedge; consumption-based pricing<sup title="Sourced — Snowflake public filings, usage-based revenue model" style="color:var(--db-primary);font-weight:700;cursor:help">S</sup> means expansion is a mechanic, not just a motion — usage scales as workloads migrate onto the platform. Pipeline coverage should hold at <b>3.5–4.2x</b><sup title="Assumed — first test: coverage snapshot against a measured win rate, once quota is set" style="color:var(--db-accent-800);font-weight:700;cursor:help">A</sup> of quota by Month 6. Databricks, BigQuery, and Redshift claim comparable platform breadth; the differentiator is migration speed and total cost of ownership, and it becomes the wedge in every competitive cycle.
+            </p>
+          </x-import>
+        </div>
+
+        <div style="position:relative">
+          <button onClick="{{ revise2 }}" title="Request revision" style="position:absolute;top:2px;right:0;font-size:11px;color:var(--db-muted);background:none;border:1px solid var(--db-line);border-radius:14px;padding:4px 10px;cursor:pointer" style-hover="color:var(--db-primary);border-color:var(--db-primary)">Revise</button>
+          <x-import component-from-global-scope="ChrisDebayleBrandComponents.Section" number="02" label="OUTSIDE-IN DIAGNOSTIC" title="What's visible from public signal" hint-size="100%,auto">
+            <div style="font-size:11px;margin-bottom:12px"><a onClick="{{ openIcp }}" style="cursor:pointer;color:var(--db-muted);text-decoration:none;border-bottom:1px dotted var(--db-muted)">Routed via ICP Datapoint Framework</a></div>
+            <p style="font-size:14.5px;line-height:1.68;color:var(--db-ink-soft)">
+              Segment read against the ICP Datapoint categories shows elevated technographic signal in enterprise accounts running a legacy or fragmented warehouse stack, and job-posting volume for data-platform titles has grown <b>2.1x</b><sup title="Sourced — public job index, Snowflake's named ICP titles, trailing 12 months" style="color:var(--db-primary);font-weight:700;cursor:help">S</sup> year over year. Working hypothesis: revenue leaks at multi-threading — a single technical champion evaluates without the economic buyer engaged<sup title="Assumed — first test: stakeholder-map coverage audit across the last two closed-lost quarters" style="color:var(--db-accent-800);font-weight:700;cursor:help">A</sup>. What would falsify it: a loss-reason audit showing concentration elsewhere in the cycle.
+            </p>
+          </x-import>
+        </div>
+
+        <div style="position:relative">
+          <button onClick="{{ revise3 }}" title="Request revision" style="position:absolute;top:2px;right:0;font-size:11px;color:var(--db-muted);background:none;border:1px solid var(--db-line);border-radius:14px;padding:4px 10px;cursor:pointer" style-hover="color:var(--db-primary);border-color:var(--db-primary)">Revise</button>
+          <x-import component-from-global-scope="ChrisDebayleBrandComponents.Section" number="03" label="PHASE 1 · DAYS 1–90" title="Reactivate + found" subtitle="90-day targets are activity and process — meetings booked, accounts multi-threaded, POVs opened — not revenue booked against an unmeasured cycle." hint-size="100%,auto">
+              <div style="font-size:11px;margin-bottom:14px;display:flex;gap:10px;flex-wrap:wrap">
+                <a onClick="{{ openRvp }}" style="cursor:pointer;color:var(--db-muted);text-decoration:none;border-bottom:1px dotted var(--db-muted)">RVP</a>
+                <a onClick="{{ openValid }}" style="cursor:pointer;color:var(--db-muted);text-decoration:none;border-bottom:1px dotted var(--db-muted)">VALID</a>
+              </div>
+              <p style="font-size:14px;line-height:1.68;color:var(--db-ink-soft);margin:0 0 12px"><b>A. Dormant pipeline reactivation.</b> Closed/lost segmentation by price, timing, product gap, champion departure, competitive loss, no-decision. Executive re-engagement built on RVP construction — referential frame, operational reality, displaced priority, permission question — not a check-in sequence.</p>
+              <p style="font-size:14px;line-height:1.68;color:var(--db-ink-soft);margin:0 0 12px"><b>B. Win + active POC replication.</b> Pull repeatable use cases, champion profile, and trigger pattern from the top 10 wins and fastest cycles. Standardize messaging (RVP), technical validation flow (VALID — V), and evaluation-criteria ownership inside the deal record.</p>
+              <p style="font-size:14px;line-height:1.68;color:var(--db-ink-soft);margin:0"><b>C. Net-new pipeline creation.</b> Account selection against ICP Datapoint Categories 1–4, stakeholder map (VALID — A), initial land use case. Connect rate is a reputation problem before it's a volume problem<sup title="Sourced — connect-rate benchmarks by data quality" style="color:var(--db-primary);font-weight:700;cursor:help">S</sup>.</p>
+          </x-import>
+        </div>
+
+        <div style="position:relative">
+          <button onClick="{{ revise4 }}" title="Request revision" style="position:absolute;top:2px;right:0;font-size:11px;color:var(--db-muted);background:none;border:1px solid var(--db-line);border-radius:14px;padding:4px 10px;cursor:pointer" style-hover="color:var(--db-primary);border-color:var(--db-primary)">Revise</button>
+          <x-import component-from-global-scope="ChrisDebayleBrandComponents.Section" number="04" label="PHASE 2 · MONTHS 4–6" title="Convert" hint-size="100%,auto">
+            <div style="font-size:11px;margin-bottom:12px;display:flex;gap:10px;flex-wrap:wrap">
+              <a onClick="{{ openValid }}" style="cursor:pointer;color:var(--db-muted);text-decoration:none;border-bottom:1px dotted var(--db-muted)">VALID</a>
+              <a onClick="{{ openDisposition }}" style="cursor:pointer;color:var(--db-muted);text-decoration:none;border-bottom:1px dotted var(--db-muted)">Disposition Science</a>
+            </div>
+            <p style="font-size:14px;line-height:1.68;color:var(--db-ink-soft)">Stage exit criteria installed; forecast gate enforced at Documented status. First disposition read at the framework's stated minimum sample<sup title="Requires data — outbound activity export at Disposition Science's minimum sample threshold, not yet available" style="color:var(--db-fail);font-weight:700;cursor:help">RD</sup>. ROI and value engineering, executive alignment cadence, competitive displacement inside active deals, POC-to-contract path (VALID, V→I→D).</p>
+          </x-import>
+        </div>
+
+        <div style="position:relative">
+          <button onClick="{{ revise5 }}" title="Request revision" style="position:absolute;top:2px;right:0;font-size:11px;color:var(--db-muted);background:none;border:1px solid var(--db-line);border-radius:14px;padding:4px 10px;cursor:pointer" style-hover="color:var(--db-primary);border-color:var(--db-primary)">Revise</button>
+          <x-import component-from-global-scope="ChrisDebayleBrandComponents.Section" number="05" label="PHASE 3 · MONTHS 7–12" title="Systemize" hint-size="100%,auto">
+            <p style="font-size:14px;line-height:1.68;color:var(--db-ink-soft)">Account expansion system, adoption and consumption growth, customer business review structure, expansion trigger signals, systematic competitive displacement — distinct from in-flight displacement in §4. No partner motion exists yet, so partner-sourced pipeline is omitted rather than placeholder-filled.</p>
+          </x-import>
+        </div>
+
+        <div style="position:relative">
+          <button onClick="{{ revise6 }}" title="Request revision" style="position:absolute;top:2px;right:0;font-size:11px;color:var(--db-muted);background:none;border:1px solid var(--db-line);border-radius:14px;padding:4px 10px;cursor:pointer" style-hover="color:var(--db-primary);border-color:var(--db-primary)">Revise</button>
+          <x-import component-from-global-scope="ChrisDebayleBrandComponents.Section" number="06" label="KPI &amp; RISK" title="What gets measured" hint-size="100%,auto">
+            <div style="font-size:11px;margin-bottom:14px"><a onClick="{{ openDisposition }}" style="cursor:pointer;color:var(--db-muted);text-decoration:none;border-bottom:1px dotted var(--db-muted)">Meeting + Activated rate routed via Disposition Science</a></div>
+            <x-import component-from-global-scope="ChrisDebayleBrandComponents.DataTable" columns="{{ kpiColumns }}" rows="{{ kpiRows }}" hint-size="100%,240px"></x-import>
+          </x-import>
+        </div>
+
+        <div style="position:relative">
+          <button onClick="{{ revise7 }}" title="Request revision" style="position:absolute;top:2px;right:0;font-size:11px;color:var(--db-muted);background:none;border:1px solid var(--db-line);border-radius:14px;padding:4px 10px;cursor:pointer" style-hover="color:var(--db-primary);border-color:var(--db-primary)">Revise</button>
+          <x-import component-from-global-scope="ChrisDebayleBrandComponents.Section" number="07" label="COMPETITIVE POSITIONING · OPTIONAL" title="Recognition before claim" hint-size="100%,auto">
+            <div style="font-size:11px;margin-bottom:12px;display:inline-block;background:var(--db-tint-warm);color:var(--db-accent-800);border-radius:12px;padding:3px 10px;font-weight:600">Constructed — §4.2, no owned framework</div>
+            <p style="font-size:14px;line-height:1.68;color:var(--db-ink-soft)">Three named competitors, all public: Databricks, Google BigQuery, AWS Redshift. Reframe strategy avoids category vocabulary and leads with one proof point — migration speed and total cost of ownership — rather than a feature portfolio. Counter-moves are scripted per competitor at the champion-conversation level, not the deck level.</p>
+          </x-import>
+        </div>
+
+        <div style="position:relative">
+          <button onClick="{{ revise8 }}" title="Request revision" style="position:absolute;top:2px;right:0;font-size:11px;color:var(--db-muted);background:none;border:1px solid var(--db-line);border-radius:14px;padding:4px 10px;cursor:pointer" style-hover="color:var(--db-primary);border-color:var(--db-primary)">Revise</button>
+          <x-import component-from-global-scope="ChrisDebayleBrandComponents.Section" number="08" label="STRATEGIC LEVERAGE PLAYS · OPTIONAL" title="Two plays, not four" hint-size="100%,auto">
+            <div style="font-size:11px;margin-bottom:12px;display:inline-block;background:var(--db-tint-warm);color:var(--db-accent-800);border-radius:12px;padding:3px 10px;font-weight:600">Constructed — §4.2, no owned framework</div>
+            <p style="font-size:14px;line-height:1.68;color:var(--db-ink-soft)">Vertical land-and-expand into the two verticals with the fastest observed migration cycle. Executive advisory program pairing account leadership with named champions ahead of renewal.</p>
+          </x-import>
+        </div>
+
+        <div style="position:relative">
+          <button onClick="{{ revise9 }}" title="Request revision" style="position:absolute;top:2px;right:0;font-size:11px;color:var(--db-muted);background:none;border:1px solid var(--db-line);border-radius:14px;padding:4px 10px;cursor:pointer" style-hover="color:var(--db-primary);border-color:var(--db-primary)">Revise</button>
+          <x-import component-from-global-scope="ChrisDebayleBrandComponents.Section" number="09" label="WHAT I'D NEED IN WEEK ONE" title="The single ask-back" hint-size="100%,auto">
+            <x-import component-from-global-scope="ChrisDebayleBrandComponents.RulesList" items="{{ weekOneItems }}" variant="hard" hint-size="100%,auto"></x-import>
+          </x-import>
+        </div>
+
+      </div>
+    </div>
+
+    <div style="position:fixed;top:64px;right:0;bottom:0;width:340px;background:#fff;border-left:1px solid var(--db-line);box-shadow:-8px 0 24px rgba(0,0,0,.06);transform:{{ frameworksTransform }};transition:transform .2s ease;overflow-y:auto;padding:22px 20px;z-index:20">
+      <div style="font-family:var(--db-font-display);font-weight:700;font-size:15px;color:var(--db-dark);margin-bottom:4px">Frameworks in play</div>
+      <div style="font-size:12px;color:var(--db-muted);margin-bottom:18px">Section 4.1 — routed, not substituted.</div>
+      <sc-for list="{{ frameworks }}" as="fw" hint-placeholder-count="7">
+        <div style="{{ fw.rowStyle }}">
+          <div style="font-family:var(--db-font-display);font-weight:600;font-size:13px;color:var(--db-dark);margin-bottom:4px">{{ fw.name }}</div>
+          <div style="font-size:12.5px;line-height:1.55;color:var(--db-ink-soft)">{{ fw.desc }}</div>
+        </div>
+      </sc-for>
+    </div>
+
+    <div style="position:fixed;top:64px;right:0;bottom:0;width:380px;background:#fff;border-left:1px solid var(--db-line);box-shadow:-8px 0 24px rgba(0,0,0,.06);transform:{{ contextTransform }};transition:transform .2s ease;overflow-y:auto;padding:22px 20px;z-index:20">
+      <div style="font-family:var(--db-font-display);font-weight:700;font-size:15px;color:var(--db-dark);margin-bottom:4px">Context Summary</div>
+      <div style="font-size:12px;color:var(--db-muted);margin-bottom:18px">§10 — ships with every deliverable, verbatim.</div>
+      <sc-for list="{{ contextFields }}" as="cf" hint-placeholder-count="8">
+        <div style="margin-bottom:14px">
+          <div style="font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--db-primary);font-weight:700;margin-bottom:4px">{{ cf.label }}</div>
+          <div style="font-family:ui-monospace,Menlo,monospace;font-size:12px;line-height:1.6;color:var(--db-ink-soft);white-space:pre-wrap">{{ cf.value }}</div>
+        </div>
+      </sc-for>
+    </div>
+
+  </div>
+</div>
+</x-import>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = {
+    mode: 'Interview',
+    frameworksOpen: false,
+    contextOpen: false,
+    activeFw: null,
+    draft: '',
+    messages: [
+      { isAgentText: true, text: "Scoping gate open. I won't draft before the intake block clears." },
+      { isIntake: true, fields: [
+        { label: 'Mode', value: 'Interview / New-in-Seat' },
+        { label: 'Company', value: 'Snowflake' },
+        { label: 'Role / Seat', value: 'Account Executive' },
+        { label: 'Segment Focus', value: 'Enterprise' },
+        { label: 'Motion', value: 'New logo + Expansion' },
+        { label: 'Target', value: 'Unknown — quota not yet assigned' },
+        { label: 'Pricing Model', value: 'Usage / consumption (credits)' },
+        { label: 'Reference Material', value: 'JD, 10-K' },
+      ]},
+      { isAgentText: true, text: 'Required fields are set. Four are ambiguous enough to change the plan — probing those before I draft, per §2.2.' },
+      { isProbe: true, qas: [
+        { q: 'Quota isn\u2019t set yet — assigned top-down by segment, or built bottom-up once ramped?', a: 'Top-down by segment. New AEs get a ramped quota schedule over the first two quarters.' },
+        { q: 'Who reads this — the hiring manager alone, or a panel?', a: 'Regional VP and the sales director, panel.' },
+        { q: 'Pricing model — pure consumption, or is there a subscription floor?', a: 'Consumption-based credits with a minimum commit floor.' },
+        { q: 'Is the competitive set known, or should §7 get cut?', a: 'Known — Databricks, BigQuery, Redshift, all named publicly.' },
+      ]},
+      { isAgentText: true, text: 'Scoping cleared. Drafting Phases 1\u20133 now against the Interview ceiling, 1,800\u20132,200 words.' },
+      { isUserText: true, text: 'Section 3 is running long. Tighten Part B to the replication playbook only \u2014 drop the vertical clustering detail.' },
+      { isAgentText: true, text: 'Scoped to §3B only, per the iteration protocol \u2014 nothing else touched. Re-running audit and ship-gate checks on that section.' },
+    ],
+  };
+
+  inputRef = React.createRef();
+  fileInputRef = React.createRef();
+
+  triggerFilePicker() {
+    if (this.fileInputRef.current) this.fileInputRef.current.click();
+  }
+  handleFiles(e) {
+    const files = Array.from(e.target.files || []).map(f => {
+      const ext = (f.name.split('.').pop() || '').toUpperCase();
+      return { name: f.name, ext };
+    });
+    if (!files.length) return;
+    this.setState(s => ({
+      messages: [...s.messages,
+        { isAttachment: true, files },
+        { isAgentText: true, text: `${files.length} file${files.length > 1 ? 's' : ''} attached. Pulling anything Sourced or Derived into the intake context — the rest stays out of the plan until tiered.` },
+      ],
+    }));
+    e.target.value = '';
+  }
+
+  frameworkList = [
+    { key: 'icp', name: 'ICP Datapoint Framework', desc: '5 datapoint categories; segment calibration across SMB / MM / ENT / Strategic; cycle length and trigger scoring.' },
+    { key: 'rvp', name: 'RVP Framework', desc: 'Referential frame \u2192 operational reality \u2192 displaced priority \u2192 permission question. Outbound messaging and opener construction.' },
+    { key: 'valid', name: 'VALID Deal Model', desc: 'Five wins (V/A/L/I/D) plus the Assumed\u2013Verbal\u2013Documented standard. Governs deal maturation and forecast gating.' },
+    { key: 'disposition', name: 'Disposition Science', desc: '10 dispositions, composite metrics, IF/THEN matrix, minimum sample thresholds for campaign diagnostics.' },
+  ];
+
+  setMode(m) { this.setState({ mode: m }); }
+  toggleFw() { this.setState(s => ({ frameworksOpen: !s.frameworksOpen, contextOpen: false })); }
+  toggleCtx() { this.setState(s => ({ contextOpen: !s.contextOpen, frameworksOpen: false })); }
+  openFw(key) { this.setState({ frameworksOpen: true, contextOpen: false, activeFw: key }); }
+  setDraft(e) { this.setState({ draft: e.target.value }); }
+  send() {
+    const text = this.state.draft.trim();
+    if (!text) return;
+    this.setState(s => ({
+      draft: '',
+      messages: [...s.messages,
+        { isUserText: true, text },
+        { isAgentText: true, text: "Logged. I'll fold that into the next revision pass and re-run the affected audit checks before redelivery." },
+      ],
+    }));
+  }
+  requestRevision(label) {
+    this.setState({ draft: `Revise ${label} \u2014 ` });
+    if (this.inputRef.current) this.inputRef.current.focus();
+  }
+
+  renderVals() {
+    const mode = this.state.mode;
+    const modeBtn = (active) => `font-family:var(--db-font-display);font-weight:600;font-size:12px;letter-spacing:.01em;padding:7px 14px;border-radius:8px;border:1px solid ${active ? 'var(--db-primary)' : 'var(--db-line)'};background:${active ? 'var(--db-primary)' : 'transparent'};color:${active ? '#fff' : 'var(--db-ink-soft)'};cursor:pointer;flex:1`;
+
+    return {
+      stageSteps: ['Scoping', 'Drafting', 'Audit', 'Ship'],
+      stageIndex: 1,
+      messages: this.state.messages,
+      draft: this.state.draft,
+      setDraft: (e) => this.setDraft(e),
+      send: () => this.send(),
+      inputRef: this.inputRef,
+      fileInputRef: this.fileInputRef,
+      triggerFilePicker: () => this.triggerFilePicker(),
+      handleFiles: (e) => this.handleFiles(e),
+
+      modeInterviewStyle: modeBtn(mode === 'Interview'),
+      modeInternalStyle: modeBtn(mode === 'Internal'),
+      setModeInterview: () => this.setMode('Interview'),
+      setModeInternal: () => this.setMode('Internal'),
+
+      toggleFw: () => this.toggleFw(),
+      toggleCtx: () => this.toggleCtx(),
+      frameworksTransform: this.state.frameworksOpen ? 'translateX(0)' : 'translateX(100%)',
+      contextTransform: this.state.contextOpen ? 'translateX(0)' : 'translateX(100%)',
+
+      openIcp: () => this.openFw('icp'),
+      openRvp: () => this.openFw('rvp'),
+      openValid: () => this.openFw('valid'),
+      openDisposition: () => this.openFw('disposition'),
+
+      frameworks: this.frameworkList.map(fw => ({
+        name: fw.name,
+        desc: fw.desc,
+        rowStyle: `padding:12px;margin-bottom:8px;border-radius:8px;background:${this.state.activeFw === fw.key ? 'var(--db-tint-blue)' : 'transparent'};border:1px solid ${this.state.activeFw === fw.key ? 'var(--db-primary)' : 'var(--db-line)'}`,
+      })),
+
+      revise1: () => this.requestRevision('§1 Executive Summary'),
+      revise2: () => this.requestRevision('§2 Outside-In Diagnostic'),
+      revise3: () => this.requestRevision('§3 Phase 1'),
+      revise4: () => this.requestRevision('§4 Phase 2'),
+      revise5: () => this.requestRevision('§5 Phase 3'),
+      revise6: () => this.requestRevision('§6 KPI & Risk'),
+      revise7: () => this.requestRevision('§7 Competitive Positioning'),
+      revise8: () => this.requestRevision('§8 Leverage Plays'),
+      revise9: () => this.requestRevision('§9 Week One'),
+
+      kpiColumns: ['Metric', '12-Month Target', 'Early Risk Signal', 'Mitigation'],
+      kpiRows: [
+        ['Pipeline coverage', '3.5\u20134.2x (A)', '<3x by Month 4', 'Accelerate Phase 1 net-new motion'],
+        ['Reactivated revenue %', '30\u201340% (A)', '<15% by Month 3', 'Escalate exec re-engagement cadence'],
+        ['Win rate', 'Requires data (RD)', 'No baseline by Month 2', 'Instrument disposition tracking Week 1'],
+        ['Sales cycle', 'Requires data (RD)', 'No stage-dated export', 'Pull 24-mo closed/lost by stage'],
+        ['Meeting + Activated rate', 'Disposition Science floor', 'Below floor at first read', 'List \u2192 Message \u2192 Rep priority fix'],
+      ],
+
+      weekOneItems: [
+        'Requires data \u2014 24-month closed/lost export segmented by loss reason',
+        'Requires data \u2014 stage-dated pipeline export for cycle-length baseline',
+        'CRM read access to score dormant accounts against ICP categories',
+        'Named list of the top 10 wins and active POCs for replication pull',
+        'Confirmation of the ramped quota schedule and who sets it',
+      ],
+
+      contextFields: [
+        { label: 'Build', value: 'Snowflake \u00b7 Interview \u00b7 2026-09-22 \u00b7 v2' },
+        { label: 'Intake', value: 'Mode: Interview\nCompany: Snowflake\nRole: Account Executive\nSegment: Enterprise\nMotion: New logo + Expansion\nTarget: Unknown, quota not yet assigned\nPricing: Usage / consumption, commit floor' },
+        { label: 'Probe Answers', value: 'Target: top-down by segment, ramped over 2 quarters\nAudience: Regional VP + sales director panel\nPricing: consumption with commit floor\nCompetitive set: known, 3 named' },
+        { label: 'Frameworks Used', value: 'ICP Datapoint, RVP, VALID, Disposition Science' },
+        { label: 'Unowned Areas', value: '§7 Competitive Positioning, §8 Leverage Plays \u2014 constructed, flagged in-plan' },
+        { label: 'Unresolved', value: 'Quota: Requires Data, ramp schedule pending\nWin rate: Requires Data\nSales cycle: Requires Data' },
+        { label: 'Sections Cut', value: 'None \u2014 within word ceiling' },
+      ],
+    };
+  }
+}
+
+</script>
+</body>
+</html>
