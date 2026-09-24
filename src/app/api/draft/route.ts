@@ -28,14 +28,16 @@ const INTERVIEW_STRUCTURE = `Produce exactly these sections, numbers "01"-"09", 
 09 What I'd Need in Week One (goes in weekOneItems, not sections[] body — still include a stub section "09" with empty bodyMarkup)
 Word ceiling: 1,800-2,200 words total across execSummaryMarkup + section bodies (excluding evidence-tag detail text and KPI/week-one items). If over ceiling, cut in this order: §08 -> §07 -> trim §05 to targets only. Never cut §02, §06, §09.`;
 
-const INTERNAL_STRUCTURE = `Produce these sections per §6.2 (Internal Operating Plan):
+const INTERNAL_STRUCTURE = `Produce EXACTLY these six sections per §6.2 (Internal Operating Plan), numbers "01"-"06", and no others:
 01 Executive Summary (<=200 words, board-readable — execSummaryMarkup)
 02 Baseline and Variance Read (Sourced tier throughout — an internal plan carrying Assumed figures in its baseline has a data problem before a strategy problem)
 03 Capacity and Coverage Model (§4.2 unowned area — mark constructed:true, state every assumption)
 04 Quarterly Initiative Sequence (gated — each quarter states what must be true to proceed)
 05 KPI and Risk Table (kpiRows)
 06 Assumptions Register (every Assumed and Requires Data item, with owner and test date — weekOneItems)
-No fixed word ceiling, but section discipline still applies — don't pad.`;
+No fixed word ceiling, but section discipline still applies — don't pad.
+Competitive Positioning and Strategic Leverage Plays are Interview-mode-only
+sections (§5.7/§5.8) — do not add them here under any name.`;
 
 export async function POST(req: Request) {
   const { intake, probeAnswers, attachments } = (await req.json()) as {
@@ -72,10 +74,10 @@ Routed frameworks (§4.1) must be named in the section that uses them, listed
 in each section's frameworksLinked array using their exact names (e.g. "ICP
 Datapoint Framework", "RVP Framework", "VALID Deal Model", "Disposition
 Science"). §4.2 unowned areas (pricing/packaging, capacity/quota modeling,
-pipeline coverage math, compensation design, territory allocation, and — for
-this build — Competitive Positioning and Strategic Leverage Plays since
-Execution Value Thesis is out of scope) must set constructed:true and must
-not borrow a routed framework's authority.
+pipeline coverage math, compensation design, territory allocation, sales
+stage/exit-criteria definition, and — in Interview mode only, per §5.7/§5.8
+— Competitive Positioning and Strategic Leverage Plays) must set
+constructed:true and must not borrow a routed framework's authority.
 
 Style (§11): sharp, quantified, operator voice. Zero category vocabulary
 (transformation, optimize, unlock, synergy, flywheel, supercharge,

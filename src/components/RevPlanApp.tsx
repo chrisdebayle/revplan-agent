@@ -26,6 +26,7 @@ import { ProbeForm } from "./ProbeForm";
 import { PlanView } from "./PlanView";
 import { FrameworksDrawer, ContextDrawer } from "./Drawers";
 import { AuditDrawer } from "./AuditDrawer";
+import { DeckDrawer } from "./DeckDrawer";
 
 type Phase = "intake" | "probing" | "ready" | "drafting" | "drafted";
 
@@ -48,6 +49,7 @@ interface PersistedState {
   draftContext: DraftContext | null;
   auditFindings: AuditFinding[] | null;
   ceilingAccepted: boolean;
+  deck: { path: string; generatedAt: string } | null;
 }
 
 const INITIAL: PersistedState = {
@@ -62,6 +64,7 @@ const INITIAL: PersistedState = {
   draftContext: null,
   auditFindings: null,
   ceilingAccepted: false,
+  deck: null,
 };
 
 const CLIENT_PARSEABLE_EXT = new Set(["md", "markdown", "txt", "srt", "vtt"]);
@@ -83,7 +86,7 @@ function sectionTitleFor(plan: RevenuePlan | null, sectionId: string): string {
 
 export function RevPlanApp() {
   const [state, setState] = useLocalState<PersistedState>(INITIAL);
-  const { intake, phase, messages, probeQuestions, probeAnswers, attachments, bypassedNotes, plan, draftContext, auditFindings, ceilingAccepted } = state;
+  const { intake, phase, messages, probeQuestions, probeAnswers, attachments, bypassedNotes, plan, draftContext, auditFindings, ceilingAccepted, deck } = state;
 
   const [reviseTarget, setReviseTarget] = useState<string | null>(null);
   const [composerText, setComposerText] = useState("");
@@ -93,6 +96,8 @@ export function RevPlanApp() {
   const [contextOpen, setContextOpen] = useState(false);
   const [auditOpen, setAuditOpen] = useState(false);
   const [auditBusy, setAuditBusy] = useState(false);
+  const [deckOpen, setDeckOpen] = useState(false);
+  const [deckBusy, setDeckBusy] = useState(false);
 
   const composerRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -316,6 +321,26 @@ export function RevPlanApp() {
     handleReviseClick(sectionId);
   }
 
+  async function handleGenerateDeck() {
+    if (!plan) return;
+    setError(null);
+    setDeckBusy(true);
+    try {
+      const res = await fetch("/api/deck", {
+        method: "POST",
+        body: JSON.stringify({ intake, probeAnswers, plan, shipClean }),
+      });
+      const data = await res.json();
+      if (data.error) throw new Error(data.error);
+      patch({ deck: { path: data.path, generatedAt: data.manifest.generatedAt } });
+      pushMessage({ kind: "agent-text", text: `Deck generated — public${data.path}. Open it from the Deck panel in the header.` });
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Deck generation failed.");
+    } finally {
+      setDeckBusy(false);
+    }
+  }
+
   function handleFiles(e: ChangeEvent<HTMLInputElement>) {
     const files = Array.from(e.target.files || []);
     if (!files.length) return;
@@ -413,9 +438,10 @@ export function RevPlanApp() {
     <div style={{ height: "100vh", display: "flex", flexDirection: "column", fontFamily: "var(--db-font-body, sans-serif)", background: "var(--db-paper, #fff)", overflow: "hidden" }}>
       <Header
         stage={stage}
-        onToggleFrameworks={() => { setFrameworksOpen((v) => !v); setContextOpen(false); setAuditOpen(false); }}
-        onToggleContext={() => { setContextOpen((v) => !v); setFrameworksOpen(false); setAuditOpen(false); }}
-        onToggleAudit={() => { setAuditOpen((v) => !v); setFrameworksOpen(false); setContextOpen(false); }}
+        onToggleFrameworks={() => { setFrameworksOpen((v) => !v); setContextOpen(false); setAuditOpen(false); setDeckOpen(false); }}
+        onToggleContext={() => { setContextOpen((v) => !v); setFrameworksOpen(false); setAuditOpen(false); setDeckOpen(false); }}
+        onToggleAudit={() => { setAuditOpen((v) => !v); setFrameworksOpen(false); setContextOpen(false); setDeckOpen(false); }}
+        onToggleDeck={() => { setDeckOpen((v) => !v); setFrameworksOpen(false); setContextOpen(false); setAuditOpen(false); }}
       />
 
       <div style={{ flex: 1, display: "flex", minHeight: 0 }}>
@@ -583,6 +609,15 @@ export function RevPlanApp() {
           onJumpToRevise={handleJumpToReviseFromAudit}
           ceilingAccepted={ceilingAccepted}
           onAcceptCeiling={() => patch({ ceilingAccepted: true })}
+        />
+        <DeckDrawer
+          open={deckOpen}
+          hasPlan={!!plan}
+          shipClean={shipClean}
+          busy={deckBusy}
+          deckPath={deck?.path ?? null}
+          generatedAt={deck?.generatedAt ?? null}
+          onGenerate={handleGenerateDeck}
         />
       </div>
     </div>

@@ -16,13 +16,20 @@ export function loadDoctrine(): string {
 }
 
 /**
- * HANDOFF.md's scope decisions (Kosoglow 5 Agreements, Cold Calling 2026 New
- * Rules, and Execution Value Thesis dropped as practice-specific IP not
- * needed for this personal build; Client Engagement mode dropped) are a
- * build-scope decision layered on top of the doctrine, not an edit to the
- * doctrine file itself — the §4.1 routing table above still lists all of
- * them. Without this override the model routes to them anyway, since they
- * read as valid citations straight out of the doctrine it was just given.
+ * Kosoglow 5 Agreements is fully retired at the doctrine level now (see the
+ * "Retired — do not cite" line in §4.1) — no override needed for it anymore.
+ * Cold Calling 2026 New Rules and Execution Value Thesis are still listed as
+ * live routed frameworks in the doctrine's own §4.1 table, so this override
+ * still has to suppress those two: without it the model routes to them
+ * anyway, since they read as valid citations straight out of the doctrine
+ * it was just given. Client Engagement mode is a build-scope decision from
+ * HANDOFF.md, not a doctrine edit.
+ *
+ * IMPORTANT: this text itself goes into the system prompt, so it must never
+ * name a framework we want to disappear entirely — the model will happily
+ * echo "excluded per override" mentions of that name straight back into its
+ * own scopingDecisions/audit output. State exclusions by requirement, not by
+ * the retired framework's name, once removing the name is the goal.
  */
 export const SCOPE_OVERRIDE = `---
 
@@ -34,17 +41,13 @@ Only Interview and Internal modes are in scope; Client Engagement mode
 
 Only these four frameworks from §4.1 may be routed to or named in output:
 ICP Datapoint Framework, RVP Framework, VALID Deal Model, Disposition
-Science. Kosoglow 5 Agreements, Cold Calling 2026 New Rules, and Execution
-Value Thesis are retired for this build — never cite or route to them, even
-though the §4.1 table above still lists them. Wherever the doctrine's
-structure implies one of these three (stage exit criteria normally routed to
-Kosoglow; connect-rate/channel infrastructure normally routed to Cold
-Calling 2026; positioning/why-us narrative normally routed to Execution
-Value Thesis), build that content openly instead, per the §4.2 pattern:
-constructed:true, no framework citation, no borrowed authority. This
-includes §5.3's stage-exit-criteria and evaluation-ownership references,
-§5.4's forecast-gate-adjacent stage language, and §5.7 Competitive
-Positioning's why-us narrative.
+Science. Two requirements in the doctrine's own §4.1 table route to
+frameworks that are retired for this build and must never be cited or
+routed to: connect-rate/channel infrastructure, and positioning/why-us
+narrative. Build both openly instead, per the §4.2 pattern: constructed:
+true, no framework citation, no borrowed authority, and no mention of what
+framework would normally apply — just build the content and label it
+constructed. This includes §5.7 Competitive Positioning's why-us narrative.
 
 The pre-PMF Lean Canvas exit route (§1.1) is unbuilt in this pass — if the
 intake plainly describes a company without product-market fit, say so in

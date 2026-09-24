@@ -137,3 +137,54 @@ export interface ShipGateCheck {
   passed: boolean;
   detail: string;
 }
+
+// --- Deck (final shippable artifact) -----------------------------------
+// A fixed vocabulary of slide "shapes" borrowed from deck-example-tradeform.html.
+// The deck is a translation layer: plain business language, no evidence-tag
+// syntax, no doctrine section numbers — the plan is the source of truth, the
+// deck is what a business leader actually reads.
+
+export interface DeckCard {
+  tag: string;
+  title: string;
+  body: string;
+  highlight?: boolean;
+}
+
+export interface DeckStat {
+  value: string;
+  label: string;
+  detail: string;
+}
+
+export interface DeckGate {
+  name: string;
+  owner: string;
+  detail: string;
+}
+
+export type DeckSlide =
+  | { kind: "cover"; eyebrow: string; title: string; lede: string }
+  | { kind: "divider"; chapterNumber: string; title: string; lede: string }
+  | { kind: "statement"; eyebrow?: string; text: string; chips?: string[] }
+  | { kind: "quote"; eyebrow?: string; quote: string; source: string; note?: string }
+  | { kind: "cards"; eyebrow?: string; columns: 2 | 3 | 4; cards: DeckCard[] }
+  | { kind: "stats"; eyebrow?: string; stats: DeckStat[]; note?: string }
+  | { kind: "list"; eyebrow?: string; items: string[]; note?: string }
+  | { kind: "gaterow"; eyebrow?: string; gates: DeckGate[]; gateLabel: string; gateDetail: string; note?: string }
+  | { kind: "closing"; eyebrow: string; title: string; lede: string };
+
+export interface DeckChapter {
+  title: string;
+  slides: DeckSlide[];
+}
+
+export interface DeckManifest {
+  companyTitle: string;
+  eyebrow: string;
+  preparedBy: string;
+  chapters: DeckChapter[];
+  slug: string;
+  generatedAt: string;
+  shipClean: boolean;
+}

@@ -115,7 +115,6 @@ Every requirement below has an owned, field-tested framework behind it. The agen
 | Outbound messaging + opener | **RVP Framework** | Referential frame → operational reality → displaced priority → permission question |
 | Campaign diagnostics | **Disposition Science** | 10 dispositions, composite metrics, IF/THEN matrix, List → Message → Rep priority order, minimum sample thresholds |
 | Connect-rate & channel infrastructure | **Cold Calling 2026 New Rules** | STIR/SHAKEN attestation, connect-rate benchmarks by data quality, opener conversion data |
-| Sales stage definition + exit criteria | **Kosoglow 5 Agreements** | Problem → Priority → Evaluation → Value → Commercial; seminal question, exit criteria, risk criteria per stage |
 | Deal maturation, POC criteria, forecast gate | **VALID Deal Model** | Five wins (V/A/L/I/D), Assumed–Verbal–Documented standard, sequencing model, deal risk factors |
 | Stakeholder / power mapping | **VALID** — A (Political Win) | Champion and counter-political map, multi-threading, leadership-escalation trigger |
 | Positioning & why-us narrative | **Execution Value Thesis** | Recognition over claim, zero category vocabulary, displaced priority, one proof point |
@@ -124,6 +123,8 @@ Every requirement below has an owned, field-tested framework behind it. The agen
 **Supporting reference:** *RVP Worked Example* is reference material, not a routed framework. Cite it under RVP for sequence assembly (one RVP per role, one trigger per account, E1–E4 construction) and for the failure-attribution table that separates a message problem from a list problem.
 
 **Retired — do not cite:** *DOS Extended v1*. Superseded by RVP. Pattern interrupt as an opener is retired; recognition outperforms surprise in enterprise. The deflection handler survives inside RVP.
+
+**Retired — do not cite:** *Kosoglow 5 Agreements*. Sales-stage definition and exit criteria are no longer routed to an owned framework — build them openly per §4.2 instead. Deal maturation and forecast gating stay fully governed by VALID, which was never dependent on Kosoglow.
 
 ### 4.2 Areas with no owned framework *(declare, don't improvise)*
 
@@ -134,6 +135,7 @@ These appear in plan output but have no validated framework behind them. The age
 - **Pipeline coverage math** (coverage ratio derivation from cycle length and win rate)
 - **Compensation design**
 - **Territory and account allocation**
+- **Sales stage definition and exit criteria** (naming stages, their seminal question, and what closes each one)
 
 Where one of these carries material weight in a plan, the agent flags it in the Context Summary as a candidate to formalize. Coverage math and capacity modeling are the two most frequently load-bearing and the most likely to be challenged by a CRO reader.
 
@@ -157,7 +159,7 @@ What is visible from public signal, explicitly labeled as such. Segment read aga
 Closed/lost segmentation model (price, timing, product gap, champion departure, competitive loss, no-decision) · reactivation scoring criteria · executive re-engagement approach built on **RVP** construction, not a "checking in" sequence · expected conversion stated per Section 3 Rule 2 or 3 depending on available basis.
 
 **B. Win + active POC replication** *(method, not analysis)*
-What to pull from top 10 wins, live POCs, and fastest cycles → repeatable use cases, champion profile, trigger patterns, vertical clustering. Output is a repeatable playbook standardizing: messaging (**RVP**), technical validation flow (**VALID — V**), and evaluation-criteria ownership (**Kosoglow — Stage 3, Evaluation Agreement**).
+What to pull from top 10 wins, live POCs, and fastest cycles → repeatable use cases, champion profile, trigger patterns, vertical clustering. Output is a repeatable playbook standardizing: messaging (**RVP**) and technical validation flow (**VALID — V**). Evaluation-criteria ownership — who signs off on the technical win, and when — is built openly per §4.2; no owned framework governs it in this build.
 
 **C. Net-new pipeline creation**
 Account selection (**ICP Datapoint**, Categories 1–4) · stakeholder map (**VALID — A**) · initial land use case · channel infrastructure reality check (**Cold Calling 2026** — connect rate is a reputation problem before it is a volume problem) · partner leverage where a named partner exists, omitted entirely where none does.
@@ -165,7 +167,7 @@ Account selection (**ICP Datapoint**, Categories 1–4) · stakeholder map (**VA
 **90-day targets — activity and process, not revenue.** A seat holder controls meetings booked, accounts multi-threaded, POVs opened, stages defined, and dispositions instrumented. Booking 90-day revenue against a cycle you haven't measured is the first thing a sharp CRO will challenge.
 
 ### 4 · Phase 2 — Months 4–6: Convert
-Stage exit criteria installed (**Kosoglow**) · forecast gate enforced at Documented status (**VALID**) · first disposition read at the framework's stated minimum sample, confirmed at its stated confidence threshold (**Disposition Science**) · ROI and value engineering · executive alignment cadence · competitive displacement inside active deals · POC-to-contract path (**VALID**, V → I → D sequence).
+Stage exit criteria installed (constructed openly, §4.2) · forecast gate enforced at Documented status (**VALID**) · first disposition read at the framework's stated minimum sample, confirmed at its stated confidence threshold (**Disposition Science**) · ROI and value engineering · executive alignment cadence · competitive displacement inside active deals · POC-to-contract path (**VALID**, V → I → D sequence).
 
 **Targets:** win rate, cycle compression, expansion penetration, forecast accuracy variance.
 

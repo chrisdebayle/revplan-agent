@@ -29,11 +29,13 @@ export function Header({
   onToggleFrameworks,
   onToggleContext,
   onToggleAudit,
+  onToggleDeck,
 }: {
   stage: Stage;
   onToggleFrameworks: () => void;
   onToggleContext: () => void;
   onToggleAudit: () => void;
+  onToggleDeck: () => void;
 }) {
   const ds = useDs();
   const StepLadder = ds?.StepLadder as ComponentType<Record<string, unknown>> | undefined;
@@ -77,6 +79,9 @@ export function Header({
         </button>
         <button onClick={onToggleAudit} style={pillBtn}>
           Audit &amp; Ship
+        </button>
+        <button onClick={onToggleDeck} style={pillBtn}>
+          Deck
         </button>
         <button onClick={onToggleContext} style={pillBtn}>
           Context Summary

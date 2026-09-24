@@ -1,0 +1,304 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Revenue Plan — Clutch Solutions · Revenue Plan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>:root{--ground:#0B0E11;--ground-view:#101317;--card-dark:#171B20;--hair-1:#1B2027;--hair-2:#22272D;--hair-3:#262B31;--hair-4:#2A3037;--accent:#F97316;--accent-700:#C85D12;--accent-800:#B65510;--primary:#0A66C2;--link-dark:#57A8EE;--ink-body:#E8EBEE;--ink-head:#F4F6F8;--ink-2:#A8B0B9;--muted-2:#7E858E;--muted-3:#737B84;--font-display:'Space Grotesk','Inter',-apple-system,sans-serif;--font-body:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;--shell-max:1320px;--view:var(--accent);}
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{width:100%;height:100%;background:var(--ground);color:var(--ink-body);font-family:var(--font-body);overflow:hidden;-webkit-font-smoothing:antialiased;}
+.app{display:flex;flex-direction:column;height:100vh;width:100vw;}
+.topbar{flex:0 0 auto;display:flex;align-items:center;justify-content:space-between;gap:24px;padding:0 34px;height:62px;border-bottom:1px solid var(--hair-2);background:var(--ground);}
+.wordmark{font-family:var(--font-display);font-weight:700;font-size:14px;letter-spacing:0.16em;color:var(--ink-head);white-space:nowrap;}
+.chapnav{display:flex;gap:4px;overflow:hidden;flex-wrap:nowrap;}
+.chapnav button{all:unset;cursor:pointer;font-size:10.5px;font-weight:600;letter-spacing:0.11em;text-transform:uppercase;color:var(--muted-3);padding:7px 10px;border-bottom:2px solid transparent;white-space:nowrap;transition:color .25s ease,border-color .25s ease;}
+.chapnav button:hover{color:var(--ink-2);}
+.chapnav button.active{color:var(--view);border-bottom-color:var(--view);}
+.cobrand{display:flex;align-items:center;gap:12px;white-space:nowrap;}
+.cobrand .prep{font-size:9px;letter-spacing:0.15em;text-transform:uppercase;color:var(--muted-3);}
+.cobrand .clientname{font-family:var(--font-display);font-weight:700;font-size:13px;color:var(--ink-2);}
+.stage{flex:1;position:relative;overflow:hidden;background:var(--ground-view);}
+.slide{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:46px 54px;opacity:0;transform:translateY(10px);pointer-events:none;transition:opacity .3s ease,transform .3s ease;}
+.slide.active{opacity:1;transform:translateY(0);pointer-events:auto;}
+.inner{width:100%;max-width:var(--shell-max);display:flex;flex-direction:column;gap:26px;}
+.eyebrow{font-family:var(--font-display);font-weight:600;font-size:12px;letter-spacing:0.2em;text-transform:uppercase;color:var(--view);}
+h1{font-family:var(--font-display);font-weight:700;font-size:clamp(34px,4.4vw,58px);line-height:1.06;color:var(--accent);letter-spacing:-0.015em;}
+h1.light{color:var(--ink-head);}
+.lede{font-size:clamp(16.5px,1.5vw,21px);line-height:1.6;color:var(--ink-2);max-width:900px;font-weight:300;}
+.statement{font-family:var(--font-display);font-weight:500;font-size:clamp(22px,2.6vw,36px);line-height:1.32;color:var(--ink-head);max-width:1020px;letter-spacing:-0.01em;}
+.note{font-size:16px;line-height:1.62;color:var(--ink-2);max-width:980px;font-weight:300;}
+.quote{font-family:var(--font-display);font-weight:500;font-size:clamp(20px,2.4vw,33px);line-height:1.34;color:var(--ink-head);max-width:1000px;border-left:3px solid var(--accent);padding-left:26px;letter-spacing:-0.01em;}
+.quote .src{display:block;margin-top:18px;font-family:var(--font-body);font-weight:500;font-size:12.5px;letter-spacing:0.13em;text-transform:uppercase;color:var(--muted-2);}
+.grid{display:grid;gap:16px;width:100%;}
+.g2{grid-template-columns:1fr 1fr;} .g3{grid-template-columns:repeat(3,1fr);}.g4{grid-template-columns:repeat(4,1fr);}
+.card{background:var(--card-dark);border:1px solid var(--hair-3);border-radius:9px;padding:26px 24px;display:flex;flex-direction:column;gap:10px;}
+.card.hl{border-color:var(--accent-800);}
+.card .ct{font-family:var(--font-display);font-weight:700;font-size:18px;color:var(--ink-head);}
+.card.hl .ct{color:var(--accent);}
+.card p{font-size:15.5px;line-height:1.6;color:var(--ink-2);font-weight:300;}
+.card .tag{font-size:10.5px;letter-spacing:0.15em;text-transform:uppercase;color:var(--muted-2);font-weight:600;}
+.stat{background:var(--card-dark);border:1px solid var(--hair-3);border-radius:9px;padding:28px 24px;display:flex;flex-direction:column;gap:9px;}
+.stat .sv{font-family:var(--font-display);font-weight:700;font-size:clamp(30px,3.4vw,45px);color:var(--accent);line-height:1;}
+.stat.txt .sv{font-size:clamp(19px,2.1vw,27px);line-height:1.16;}
+.stat .sk{font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted-2);font-weight:600;}
+.stat .sd{font-size:14.5px;line-height:1.55;color:var(--ink-2);font-weight:300;}
+.rail{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;width:100%;}
+.rl{background:var(--card-dark);border:1px solid var(--hair-3);border-top:3px solid var(--sc);border-radius:0 0 9px 9px;padding:22px 18px;display:flex;flex-direction:column;gap:10px;}
+.rl .rn{font-family:var(--font-display);font-weight:700;font-size:11px;letter-spacing:0.15em;text-transform:uppercase;color:var(--sc);}
+.rl .rt{font-family:var(--font-display);font-weight:700;font-size:18px;color:var(--ink-head);line-height:1.22;}
+.rl p{font-size:14.5px;line-height:1.55;color:var(--ink-2);font-weight:300;}
+.rl .own{margin-top:auto;padding-top:12px;border-top:1px solid var(--hair-2);font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:var(--sc);font-weight:600;opacity:.85;}
+.list{display:flex;flex-direction:column;gap:17px;width:100%;max-width:980px;}
+.list li{list-style:none;display:flex;gap:20px;align-items:flex-start;font-size:18px;line-height:1.52;color:var(--ink-body);font-weight:300;}
+.list .n{font-family:var(--font-display);font-weight:700;font-size:13.5px;color:var(--accent);min-width:26px;padding-top:4px;letter-spacing:0.05em;}
+.chiprow{display:flex;flex-wrap:wrap;gap:8px;}
+.chip{display:inline-flex;align-items:center;padding:7px 15px;border-radius:999px;font-family:var(--font-body);font-size:12.5px;font-weight:700;letter-spacing:0.01em;white-space:nowrap;color:var(--ground);background:var(--link-dark);}
+.divider{position:relative;width:100%;}
+.dnum{position:absolute;top:50%;left:0;transform:translateY(-56%);font-family:var(--font-display);font-weight:700;font-size:clamp(120px,17vw,210px);color:var(--view);opacity:.07;line-height:1;user-select:none;z-index:0;letter-spacing:-0.04em;}
+.divider>*:not(.dnum){position:relative;z-index:1;}
+.rule{width:58px;height:3px;background:var(--view);margin:20px 0;}
+.botbar{position:relative;flex:0 0 auto;display:flex;align-items:center;justify-content:space-between;padding:0 34px;height:52px;border-top:1px solid var(--hair-2);background:var(--ground);}
+.counter{font-size:11px;letter-spacing:0.13em;color:var(--muted-3);font-variant-numeric:tabular-nums;display:flex;gap:13px;align-items:center;text-transform:uppercase;}
+.counter .cur{color:var(--view);font-weight:600;}
+.navhint{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);display:flex;align-items:center;gap:8px;white-space:nowrap;font-size:10.5px;letter-spacing:0.1em;text-transform:uppercase;font-weight:500;color:var(--muted-3);}
+.navhint kbd{font-family:var(--font-body);font-size:10px;font-weight:600;line-height:1;border:1px solid var(--hair-4);border-radius:4px;padding:4px 7px;color:var(--ink-2);background:var(--card-dark);letter-spacing:0.04em;}
+.navhint .sep{color:var(--hair-4);}
+.navbtns{display:flex;gap:9px;}
+.navbtns button{all:unset;cursor:pointer;display:flex;align-items:center;gap:7px;padding:7px 14px;border:1px solid var(--hair-4);border-radius:5px;font-size:10.5px;letter-spacing:0.13em;text-transform:uppercase;color:var(--ink-2);font-weight:600;transition:border-color .2s,color .2s,background-color .2s;}
+#prev{border-color:rgba(87,168,238,.42);color:var(--link-dark);}
+#prev:hover{border-color:var(--link-dark);color:var(--link-dark);background:rgba(87,168,238,.12);}
+#next{border-color:rgba(249,115,22,.42);color:var(--accent);}
+#next:hover{border-color:var(--accent);color:var(--accent);background:rgba(249,115,22,.12);}
+.progress{position:absolute;left:0;bottom:0;height:2px;background:var(--accent);transition:width .3s ease;z-index:6;}
+.lockgate{display:flex;align-items:center;gap:16px;background:var(--accent);border-radius:9px;padding:15px 22px;}
+.lockgate .lgt{font-family:var(--font-display);font-weight:700;font-size:14.5px;color:var(--ground);letter-spacing:0.06em;}
+.lockgate .lgd{font-size:13px;line-height:1.4;color:rgba(11,14,17,.8);font-weight:500;}
+.gatebadge{display:inline-block;font-family:var(--font-display);font-weight:700;font-size:10.5px;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink-2);border:1px solid var(--hair-4);border-radius:20px;padding:4px 12px;margin-bottom:10px;}
+@media (max-width:1220px){.chapnav button{padding:7px 7px;font-size:9.5px;letter-spacing:0.08em;}.cobrand .prep{display:none;}}
+@media (max-width:1080px){.chapnav button{padding:7px 5px;font-size:8.5px;letter-spacing:0.05em;}.wordmark{font-size:12px;}}
+@media (max-width:1000px){.g2,.g3,.g4{grid-template-columns:1fr;}.rail{grid-template-columns:1fr;}.chapnav{display:none;}.navhint{display:none;}.slide{padding:30px 22px;}}</style>
+</head><body>
+<div class="app">
+  <header class="topbar">
+    <div class="wordmark">CHRIS DEBAYLE</div>
+    <nav class="chapnav" id="chapnav"></nav>
+    <div class="cobrand"><span class="prep">Prepared for</span><span class="clientname">Revenue Plan — Clutch Solutions</span></div>
+  </header>
+  <main class="stage" id="stage">
+    <section class="slide active" data-ch="0"><div class="inner">
+        <div class="eyebrow">Internal Operating Plan · Account Executive, Dallas/Ft. Worth Metroplex</div>
+        <h1>Revenue Plan — Clutch Solutions</h1>
+        <div class="rule"></div>
+        <div class="lede">Prepared by Chris Debayle · Account Executive, Clutch Solutions</div>
+      </div></section>
+    <section class="slide" data-ch="0"><div class="inner">
+        <div class="divider">
+          <div class="dnum">01</div>
+          <h1 class="light">The Baseline</h1>
+          <div class="rule"></div>
+          <div class="lede">No quota, no prior-period actuals, no rep history in this territory. The starting point is capacity and territory, not revenue.</div>
+        </div>
+      </div></section><section class="slide" data-ch="0"><div class="inner">
+        <div class="eyebrow">Where the target actually comes from</div>
+        <div class="quote">No formal quota. Sales leadership reviews self-set targets quarterly; ramp expectation is informal, tied to book-of-business growth over the first two years.<span class="src">MANAGER · SCOPING CALL</span></div>
+        <div class="note">This plan treats that informal expectation as real and testable, not as a number to guess at.</div>
+      </div></section><section class="slide" data-ch="0"><div class="inner">
+        <div class="eyebrow">What&#39;s actually known walking in</div>
+        <div class="grid g3">
+          <div class="card">
+                <div class="tag">Territory</div>
+                <div class="ct">Dallas / Ft. Worth, Mid-Market &amp; Enterprise</div>
+                <p>New-logo motion, competing against CDW, SHI, Myriad 360, Flair Data, and GDT for the same accounts.</p>
+              </div><div class="card">
+                <div class="tag">CRM</div>
+                <div class="ct">Salesforce has history — not for me</div>
+                <p>Account and vendor data exist for the territory. Zero rep-level pipeline history, since I just joined.</p>
+              </div><div class="card">
+                <div class="tag">Vendor economics</div>
+                <div class="ct">Margin data is sitting in the portals</div>
+                <p>HPE and Nutanix rebate/GP bands are accessible now — just not pulled yet.</p>
+              </div>
+        </div>
+      </div></section><section class="slide" data-ch="0"><div class="inner">
+        <div class="eyebrow">What has to get pulled before any number here is real</div>
+        <ul class="list">
+          <li><span class="n">01</span>Account universe count and segmentation inside the Dallas/Ft. Worth territory</li><li><span class="n">02</span>Incumbent VAR per account, where it&#39;s known</li><li><span class="n">03</span>Vendor margin bands by product line (HPE, Nutanix)</li><li><span class="n">04</span>Any prior Clutch rep coverage of this territory, and why it ended</li>
+        </ul>
+        <div class="note">None of these are hard to get. They just haven&#39;t been gotten yet.</div>
+      </div></section><section class="slide" data-ch="1"><div class="inner">
+        <div class="divider">
+          <div class="dnum">02</div>
+          <h1 class="light">Capacity &amp; Coverage</h1>
+          <div class="rule"></div>
+          <div class="lede">Built for this plan, not drawn from an external model. Every number here is a range with a test attached, not a benchmark.</div>
+        </div>
+      </div></section><section class="slide" data-ch="1"><div class="inner">
+        <div class="eyebrow">Working ranges — each one gets tested, not assumed forever</div>
+        <div class="grid g3">
+          <div class="stat txt">
+                <div class="sv">25-40</div>
+                <div class="sk">active accounts, once ramped</div>
+                <div class="sd">Test: track actual opportunity creation, weeks 1-13</div>
+              </div><div class="stat txt">
+                <div class="sv">8-15</div>
+                <div class="sk">net-new opportunities per quarter</div>
+                <div class="sd">Test: same window, once ramped by Q2</div>
+              </div><div class="stat txt">
+                <div class="sv">60-120 days</div>
+                <div class="sk">cycle length, qualified to close</div>
+                <div class="sd">Test: timestamp the first 10 closed deals</div>
+              </div><div class="stat txt">
+                <div class="sv">15-25%</div>
+                <div class="sk">win rate, displacing an incumbent VAR</div>
+                <div class="sd">Test: track win/loss on the first 20 qualified opportunities</div>
+              </div>
+        </div>
+        <div class="note">Full productivity by month 4-6. Months 1-3 are account mapping, not quota-bearing.</div>
+      </div></section><section class="slide" data-ch="1"><div class="inner">
+        <div class="eyebrow">The one number that&#39;s still missing</div>
+        <div class="statement">Coverage math needs average deal GP to turn into a real ratio — and that figure doesn&#39;t exist yet for this territory.</div>
+        <div class="chiprow"><span class="chip">Pull: closed-won GP, prior 12 months, territory or adjacent proxy</span><span class="chip">Owner: rep, with manager assist</span></div>
+      </div></section><section class="slide" data-ch="2"><div class="inner">
+        <div class="divider">
+          <div class="dnum">03</div>
+          <h1 class="light">The Quarters</h1>
+          <div class="rule"></div>
+          <div class="lede">Four quarters, each gated on a condition — not on the calendar.</div>
+        </div>
+      </div></section><section class="slide" data-ch="2"><div class="inner">
+        <div class="eyebrow">What has to be true to move forward</div>
+        <div class="rail">
+          <div class="rl" style="--sc:#57A8EE">
+                <div class="rn">01 · Q1 — Map &amp; Instrument</div>
+                <div class="rt">Q1 — Map &amp; Instrument</div>
+                <p>Named-account list finalized with incumbents tagged; 15+ opportunities created and disposition-tagged</p>
+                <div class="own">Rep</div>
+              </div><div class="rl" style="--sc:#F97316">
+                <div class="rn">02 · Q2 — Convert &amp; Read</div>
+                <div class="rt">Q2 — Convert &amp; Read</div>
+                <p>At least one deal reaches Documented status; disposition read complete with a corrective action taken</p>
+                <div class="own">Rep</div>
+              </div><div class="rl" style="--sc:#8B5CF6">
+                <div class="rn">03 · Q3 — Compound</div>
+                <div class="rt">Q3 — Compound</div>
+                <p>3+ closed-won net-new logos, GP and cycle-length actuals logged</p>
+                <div class="own">Rep</div>
+              </div><div class="rl" style="--sc:#22C55E">
+                <div class="rn">04 · Q4 — Reset the Range</div>
+                <div class="rt">Q4 — Reset the Range</div>
+                <p>Zero remaining assumed figures in the core coverage math</p>
+                <div class="own">Rep + Manager</div>
+              </div>
+        </div>
+        <div class="lockgate">
+          <div>
+            <div class="lgt">Overall gate</div>
+            <div class="lgd">Every quarter upgrades last quarter&#39;s assumptions into real numbers — Q4 closes the loop on the target itself.</div>
+          </div>
+        </div>
+        
+      </div></section><section class="slide" data-ch="3"><div class="inner">
+        <div class="divider">
+          <div class="dnum">04</div>
+          <h1 class="light">KPI &amp; Risk</h1>
+          <div class="rule"></div>
+          <div class="lede">What&#39;s being tracked, what an early warning looks like, and what happens if it fires.</div>
+        </div>
+      </div></section><section class="slide" data-ch="3"><div class="inner">
+        <div class="eyebrow">The scoreboard</div>
+        <div class="grid g3">
+          <div class="stat txt">
+                <div class="sv">25-40 accounts</div>
+                <div class="sk">under coverage by end of Q1</div>
+                <div class="sd">Risk: fewer than 15 mapped by week 6 → escalate the account pull</div>
+              </div><div class="stat txt">
+                <div class="sv">8-15 / quarter</div>
+                <div class="sk">net-new opportunities, ramped by Q2</div>
+                <div class="sd">Risk: under 5 by end of Q1 → check for a list problem vs. a message problem</div>
+              </div><div class="stat txt">
+                <div class="sv">15-25%</div>
+                <div class="sk">win rate on displacement deals</div>
+                <div class="sd">Risk: under 10% after 15 qualified opps → re-map the champion and political path</div>
+              </div><div class="stat txt">
+                <div class="sv">3+ logos</div>
+                <div class="sk">closed-won by end of Q3</div>
+                <div class="sd">Risk: zero closes by end of Q2 → escalate in the manager 1:1</div>
+              </div><div class="stat txt">
+                <div class="sv">Requires data</div>
+                <div class="sk">average deal GP</div>
+                <div class="sd">Risk: coverage ratio unsolvable without it → manager-assisted pull from an adjacent territory</div>
+              </div><div class="stat txt">
+                <div class="sv">Zero</div>
+                <div class="sk">assumed figures left by end of Q4</div>
+                <div class="sd">Risk: more than 2 still open entering Q4 → force a mid-Q4 pull instead of waiting</div>
+              </div>
+        </div>
+        
+      </div></section><section class="slide" data-ch="4"><div class="inner">
+        <div class="divider">
+          <div class="dnum">05</div>
+          <h1 class="light">Assumptions &amp; Open Asks</h1>
+          <div class="rule"></div>
+          <div class="lede">Every open question in this plan lives here — nowhere else.</div>
+        </div>
+      </div></section><section class="slide" data-ch="4"><div class="inner">
+        <div class="eyebrow">Owned, dated, and tracked</div>
+        <ul class="list">
+          <li><span class="n">01</span>Named-account export, Dallas/Ft. Worth MM+ENT — rep, due end of Q1 week 2</li><li><span class="n">02</span>Incumbent VAR tagged per account — rep, due end of Q1 week 3</li><li><span class="n">03</span>HPE and Nutanix margin/rebate bands — rep, due end of Q1 week 2</li><li><span class="n">04</span>Average closed-won GP per deal, prior 12 months — rep with manager assist, due end of Q1</li><li><span class="n">05</span>Capacity range (25-40 accounts, 8-15 opps/quarter) — review end of Q1</li><li><span class="n">06</span>Cycle length range (60-120 days) — review end of Q2</li><li><span class="n">07</span>Win rate range (15-25%) — review end of Q2</li><li><span class="n">08</span>Target provenance — no formal quota yet — manager to confirm or formalize at the Q1 1:1</li>
+        </ul>
+        <div class="note">This plan is still in progress — the register above is what closes it out, quarter by quarter.</div>
+      </div></section><section class="slide" data-ch="4"><div class="inner">
+        <div class="eyebrow">Year one, in one line</div>
+        <h1>Turn every range on this page into a number by Q4.</h1>
+        <div class="rule"></div>
+        <div class="lede">That&#39;s the plan. Not hitting an unproven target — proving what the target should have been.</div>
+      </div></section>
+    <div class="progress" id="progress"></div>
+  </main>
+  <footer class="botbar">
+    <div class="counter"><span><span class="cur" id="cnum">01</span> / 15</span><span id="cname">Opening</span></div>
+    <div class="navhint"><kbd>&larr;</kbd><kbd>&rarr;</kbd><span>arrow keys</span><span class="sep">&middot;</span><kbd>space</kbd><span>to advance</span></div>
+    <div class="navbtns"><button id="prev">&larr; Prev</button><button id="next">Next &rarr;</button></div>
+  </footer>
+</div>
+<script>(function(){
+    var CH = [{"t":"The Baseline","c":"#57A8EE","first":1},{"t":"Capacity & Coverage","c":"#F97316","first":5},{"t":"The Quarters","c":"#8B5CF6","first":8},{"t":"KPI & Risk","c":"#22C55E","first":10},{"t":"Assumptions & Open Asks","c":"#EAB308","first":12}];
+    var slides = Array.prototype.slice.call(document.querySelectorAll(".slide"));
+    var total = slides.length, cur = 0;
+    var root = document.documentElement;
+    var nav = document.getElementById("chapnav");
+    CH.forEach(function(c){
+      var b = document.createElement("button");
+      b.textContent = c.t;
+      b.addEventListener("click", function(){ go(c.first); });
+      nav.appendChild(b);
+    });
+    var navBtns = Array.prototype.slice.call(nav.querySelectorAll("button"));
+    function paint(){
+      var s = slides[cur];
+      var ci = parseInt(s.dataset.ch, 10);
+      root.style.setProperty("--view", CH[ci].c);
+      document.getElementById("cnum").textContent = String(cur + 1).padStart(2, "0");
+      document.getElementById("cname").textContent = CH[ci].t;
+      document.getElementById("progress").style.width = ((cur + 1) / total * 100) + "%";
+      navBtns.forEach(function(b, i){ b.classList.toggle("active", i === ci); });
+    }
+    function go(i){
+      if (i < 0 || i >= total || i === cur) return;
+      slides[cur].classList.remove("active");
+      cur = i;
+      slides[cur].classList.add("active");
+      paint();
+    }
+    document.getElementById("next").addEventListener("click", function(){ go(cur + 1); });
+    document.getElementById("prev").addEventListener("click", function(){ go(cur - 1); });
+    document.addEventListener("keydown", function(e){
+      if (e.key === "ArrowRight" || e.key === " ") { e.preventDefault(); go(cur + 1); }
+      if (e.key === "ArrowLeft") { e.preventDefault(); go(cur - 1); }
+    });
+    var tx = 0;
+    document.addEventListener("touchstart", function(e){ tx = e.changedTouches[0].screenX; });
+    document.addEventListener("touchend", function(e){
+      var d = e.changedTouches[0].screenX - tx;
+      if (Math.abs(d) > 50) go(d < 0 ? cur + 1 : cur - 1);
+    });
+    paint();
+  })();</script>
+</body></html>

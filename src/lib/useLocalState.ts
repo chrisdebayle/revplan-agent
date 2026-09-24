@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, type Dispatch, type SetStateAction } from "react";
+import { useEffect, useState, type Dispatch, type SetStateAction } from "react";
 
 const KEY = "revplan-agent-state-v1";
 
@@ -9,7 +9,14 @@ const KEY = "revplan-agent-state-v1";
  * later pass, not this one. */
 export function useLocalState<T>(initial: T): [T, Dispatch<SetStateAction<T>>] {
   const [state, setState] = useState<T>(initial);
-  const hydrated = useRef(false);
+  // Must be React state, not a ref: a ref mutation is visible to every effect
+  // in the same commit immediately, including one that already captured the
+  // pre-hydration `state` closure — that combination (flag flipped, state
+  // stale) makes the save-effect below write the empty initial state over
+  // real saved data the instant it loads. Using state instead means the
+  // hydration effect's setState + setHydrated land in the same batched
+  // re-render, so the save-effect only ever sees them together.
+  const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
     // Mount-only, client-only sync from an external store (localStorage) —
@@ -22,17 +29,17 @@ export function useLocalState<T>(initial: T): [T, Dispatch<SetStateAction<T>>] {
     } catch {
       // corrupt or inaccessible storage — start fresh
     }
-    hydrated.current = true;
+    setHydrated(true);
   }, []);
 
   useEffect(() => {
-    if (!hydrated.current) return;
+    if (!hydrated) return;
     try {
       window.localStorage.setItem(KEY, JSON.stringify(state));
     } catch {
       // storage full or unavailable — nothing to do about it here
     }
-  }, [state]);
+  }, [state, hydrated]);
 
   return [state, setState];
 }

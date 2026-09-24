@@ -67,6 +67,19 @@ needed.
 - **Local persistence** — the whole session (intake, chat log, plan) is
   saved to `localStorage` so a page refresh doesn't lose work. Single slot,
   single user — this is a personal tool, not a multi-project app yet.
+- **Deck** — the shippable artifact. `/api/deck` translates the audited plan
+  into a standalone, self-contained HTML slide deck (`public/decks/<slug>.html`)
+  in the visual language and interaction model of `deck-example-tradeform.html`
+  (dark theme, chapter nav, keyboard/swipe navigation, a fixed vocabulary of
+  slide shapes — cover, chapter divider, statement, quote, cards, stats,
+  list, gaterow, closing). The plan stays the source of truth; the deck
+  strips all doctrine notation ({{TIER|detail}} tags, tier names, section
+  numbers) and translates substance into plain business language. Written
+  straight into `public/`, so it's live at `/decks/<slug>.html` the moment
+  it's generated, and it's an ordinary committed file from there — review
+  with `git diff`, commit and push like anything else. Generation isn't
+  gated on Ship Gate being clean; if it isn't, the deck says so once, briefly,
+  wherever it fits naturally rather than blocking the preview.
 
 ## What's not built yet
 
@@ -109,7 +122,9 @@ src/
     types.ts, doctrine.ts, anthropic.ts, evidence.ts, contextSummary.ts,
     useLocalState.ts
 public/ds/                            copied design-system bundle + CSS
+public/decks/<slug>.html              generated slide decks — the shippable artifact
 _ds/                                  original design-system source (reference)
 uploads/Revenue_Plan_OS.md            doctrine, spec of record
 Revenue Plan OS.dc.html               original static mockup (reference)
+deck-example-tradeform.html           deck visual/interaction reference (reused in src/lib/deckTemplate.ts)
 ```
