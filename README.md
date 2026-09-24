@@ -67,19 +67,30 @@ needed.
 - **Local persistence** — the whole session (intake, chat log, plan) is
   saved to `localStorage` so a page refresh doesn't lose work. Single slot,
   single user — this is a personal tool, not a multi-project app yet.
-- **Deck** — the shippable artifact. `/api/deck` translates the audited plan
-  into a standalone, self-contained HTML slide deck (`public/decks/<slug>.html`)
-  in the visual language and interaction model of `deck-example-tradeform.html`
-  (dark theme, chapter nav, keyboard/swipe navigation, a fixed vocabulary of
-  slide shapes — cover, chapter divider, statement, quote, cards, stats,
-  list, gaterow, closing). The plan stays the source of truth; the deck
-  strips all doctrine notation ({{TIER|detail}} tags, tier names, section
-  numbers) and translates substance into plain business language. Written
-  straight into `public/`, so it's live at `/decks/<slug>.html` the moment
-  it's generated, and it's an ordinary committed file from there — review
-  with `git diff`, commit and push like anything else. Generation isn't
-  gated on Ship Gate being clean; if it isn't, the deck says so once, briefly,
-  wherever it fits naturally rather than blocking the preview.
+- **Deck** — the shippable artifact, with its own full view (header's "Deck"
+  toggle). `/api/deck` translates the audited plan into a standalone,
+  self-contained HTML slide deck (`public/decks/<slug>.html`) in the visual
+  language and interaction model of `deck-example-tradeform.html` (dark
+  theme, chapter nav, keyboard/swipe navigation, a fixed vocabulary of slide
+  shapes — cover, chapter divider, statement, quote, cards, stats, list,
+  gaterow, closing). The plan stays the source of truth; the deck strips all
+  doctrine notation ({{TIER|detail}} tags, tier names, section numbers) and
+  translates substance into plain business language. Written straight into
+  `public/`, so it's live at `/decks/<slug>.html` the moment it's generated,
+  and it's an ordinary committed file from there — review with `git diff`,
+  commit and push like anything else. Generation isn't gated on Ship Gate
+  being clean; if it isn't, the deck says so once, briefly, wherever it fits
+  naturally rather than blocking the preview.
+- **Deck editing, slide by slide** — the Deck view renders the real deck
+  live in an iframe; navigate it (arrow keys / the deck's own prev-next) to
+  the slide you want to change, click "Revise this slide," describe the
+  change, and `/api/deck-revise` regenerates just that one slide — content
+  only, it can't add/remove/reorder slides or chapters. The deck's own nav
+  script posts the active slide back to the parent app on every navigation
+  (`window.postMessage`, inert when the file is opened standalone), so the
+  sidebar always knows exactly what's on screen. The cover slide isn't
+  revisable this way yet — it's synthesized from manifest fields, not a
+  stored slide — regenerate the whole deck to change it.
 
 ## What's not built yet
 
@@ -111,16 +122,21 @@ cover it, but if you see this again, that's the first thing to raise.
 src/
   app/
     api/probe|draft|revise/route.ts   scoping, drafting, section revision
+    api/audit|deck|deck-revise/route.ts   audit pass, deck generation, slide-scoped deck revision
+    api/parse-file/route.ts           server-side PDF/DOCX text extraction
     layout.tsx, page.tsx, globals.css
   components/
-    RevPlanApp.tsx                    the whole app shell + state machine
+    RevPlanApp.tsx                    the whole app shell + state machine + view-mode switch
     IntakeForm.tsx, ProbeForm.tsx, ChatLog.tsx
-    PlanView.tsx                      the living plan document
-    Drawers.tsx                       Frameworks / Context Summary drawers
+    PlanView.tsx                      the living plan document (Plan view)
+    DeckView.tsx                      the live deck preview + slide-revise composer (Deck view)
+    Drawers.tsx, AuditDrawer.tsx      Frameworks / Context Summary / Audit & Ship drawers (Plan view only)
     DsProvider.tsx, EvidenceProse.tsx
   lib/
     types.ts, doctrine.ts, anthropic.ts, evidence.ts, contextSummary.ts,
-    useLocalState.ts
+    useLocalState.ts, shipGate.ts
+    deckTemplate.ts                   renders a DeckManifest to the standalone HTML file
+    deckPrompt.ts                     shape vocabulary + voice, shared by deck and deck-revise
 public/ds/                            copied design-system bundle + CSS
 public/decks/<slug>.html              generated slide decks — the shippable artifact
 _ds/                                  original design-system source (reference)

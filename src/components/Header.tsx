@@ -26,16 +26,20 @@ const pillBtn = {
 
 export function Header({
   stage,
+  viewMode,
   onToggleFrameworks,
   onToggleContext,
   onToggleAudit,
-  onToggleDeck,
+  onSwitchToDeck,
+  onSwitchToPlan,
 }: {
   stage: Stage;
+  viewMode: "plan" | "deck";
   onToggleFrameworks: () => void;
   onToggleContext: () => void;
   onToggleAudit: () => void;
-  onToggleDeck: () => void;
+  onSwitchToDeck: () => void;
+  onSwitchToPlan: () => void;
 }) {
   const ds = useDs();
   const StepLadder = ds?.StepLadder as ComponentType<Record<string, unknown>> | undefined;
@@ -74,18 +78,29 @@ export function Header({
         )}
       </div>
       <div style={{ display: "flex", alignItems: "center", gap: 10, flex: "none", whiteSpace: "nowrap" }}>
-        <button onClick={onToggleFrameworks} style={pillBtn}>
-          Frameworks
-        </button>
-        <button onClick={onToggleAudit} style={pillBtn}>
-          Audit &amp; Ship
-        </button>
-        <button onClick={onToggleDeck} style={pillBtn}>
-          Deck
-        </button>
-        <button onClick={onToggleContext} style={pillBtn}>
-          Context Summary
-        </button>
+        {viewMode === "plan" ? (
+          <>
+            <button onClick={onToggleFrameworks} style={pillBtn}>
+              Frameworks
+            </button>
+            <button onClick={onToggleAudit} style={pillBtn}>
+              Audit &amp; Ship
+            </button>
+            <button onClick={onToggleContext} style={pillBtn}>
+              Context Summary
+            </button>
+            <button
+              onClick={onSwitchToDeck}
+              style={{ ...pillBtn, borderColor: "var(--db-primary, #2f5eff)", color: "var(--db-primary, #2f5eff)" }}
+            >
+              Deck &rarr;
+            </button>
+          </>
+        ) : (
+          <button onClick={onSwitchToPlan} style={pillBtn}>
+            &larr; Back to Plan
+          </button>
+        )}
       </div>
     </div>
   );

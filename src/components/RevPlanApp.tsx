@@ -8,6 +8,7 @@ import {
   type AuditFinding,
   type ChatMessage,
   type ContextSummary,
+  type DeckManifest,
   type IntakeBlock,
   type PlanSection,
   type ProbeAnswer,
@@ -26,7 +27,7 @@ import { ProbeForm } from "./ProbeForm";
 import { PlanView } from "./PlanView";
 import { FrameworksDrawer, ContextDrawer } from "./Drawers";
 import { AuditDrawer } from "./AuditDrawer";
-import { DeckDrawer } from "./DeckDrawer";
+import { DeckView, type ActiveSlide } from "./DeckView";
 
 type Phase = "intake" | "probing" | "ready" | "drafting" | "drafted";
 
@@ -49,7 +50,7 @@ interface PersistedState {
   draftContext: DraftContext | null;
   auditFindings: AuditFinding[] | null;
   ceilingAccepted: boolean;
-  deck: { path: string; generatedAt: string } | null;
+  deckManifest: DeckManifest | null;
 }
 
 const INITIAL: PersistedState = {
@@ -64,7 +65,7 @@ const INITIAL: PersistedState = {
   draftContext: null,
   auditFindings: null,
   ceilingAccepted: false,
-  deck: null,
+  deckManifest: null,
 };
 
 const CLIENT_PARSEABLE_EXT = new Set(["md", "markdown", "txt", "srt", "vtt"]);
@@ -86,7 +87,7 @@ function sectionTitleFor(plan: RevenuePlan | null, sectionId: string): string {
 
 export function RevPlanApp() {
   const [state, setState] = useLocalState<PersistedState>(INITIAL);
-  const { intake, phase, messages, probeQuestions, probeAnswers, attachments, bypassedNotes, plan, draftContext, auditFindings, ceilingAccepted, deck } = state;
+  const { intake, phase, messages, probeQuestions, probeAnswers, attachments, bypassedNotes, plan, draftContext, auditFindings, ceilingAccepted, deckManifest } = state;
 
   const [reviseTarget, setReviseTarget] = useState<string | null>(null);
   const [composerText, setComposerText] = useState("");
@@ -96,16 +97,37 @@ export function RevPlanApp() {
   const [contextOpen, setContextOpen] = useState(false);
   const [auditOpen, setAuditOpen] = useState(false);
   const [auditBusy, setAuditBusy] = useState(false);
-  const [deckOpen, setDeckOpen] = useState(false);
+
+  const [viewMode, setViewMode] = useState<"plan" | "deck">("plan");
   const [deckBusy, setDeckBusy] = useState(false);
+  const [deckRevising, setDeckRevising] = useState(false);
+  const [activeSlide, setActiveSlide] = useState<ActiveSlide | null>(null);
+  const [deckReviseTarget, setDeckReviseTarget] = useState<{ chapterIndex: number; slideIndex: number } | null>(null);
+  const [deckComposerText, setDeckComposerText] = useState("");
 
   const composerRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const chatEndRef = useRef<HTMLDivElement>(null);
+  const deckIframeRef = useRef<HTMLIFrameElement>(null);
 
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, phase]);
+
+  useEffect(() => {
+    function onMessage(e: MessageEvent) {
+      if (e.data?.type === "revplan-active-slide") {
+        setActiveSlide({
+          chapterIndex: e.data.chapterIndex,
+          slideIndex: e.data.slideIndex,
+          globalIndex: e.data.globalIndex,
+          total: e.data.total,
+        });
+      }
+    }
+    window.addEventListener("message", onMessage);
+    return () => window.removeEventListener("message", onMessage);
+  }, []);
 
   function patch(next: Partial<PersistedState>) {
     setState((s) => ({ ...s, ...next }));
@@ -325,6 +347,8 @@ export function RevPlanApp() {
     if (!plan) return;
     setError(null);
     setDeckBusy(true);
+    setActiveSlide(null);
+    setDeckReviseTarget(null);
     try {
       const res = await fetch("/api/deck", {
         method: "POST",
@@ -332,12 +356,54 @@ export function RevPlanApp() {
       });
       const data = await res.json();
       if (data.error) throw new Error(data.error);
-      patch({ deck: { path: data.path, generatedAt: data.manifest.generatedAt } });
-      pushMessage({ kind: "agent-text", text: `Deck generated — public${data.path}. Open it from the Deck panel in the header.` });
+      patch({ deckManifest: data.manifest as DeckManifest });
+      pushMessage({ kind: "agent-text", text: `Deck generated — public${data.path}. Switch to the Deck view to preview and revise it.` });
     } catch (e) {
       setError(e instanceof Error ? e.message : "Deck generation failed.");
     } finally {
       setDeckBusy(false);
+    }
+  }
+
+  function handleDeckReviseClick() {
+    if (!activeSlide || activeSlide.slideIndex === -1) return;
+    setDeckReviseTarget({ chapterIndex: activeSlide.chapterIndex, slideIndex: activeSlide.slideIndex });
+    setDeckComposerText("");
+    setError(null);
+  }
+
+  async function handleDeckComposerSend() {
+    const text = deckComposerText.trim();
+    if (!text || !deckReviseTarget || !deckManifest || !plan) return;
+    setError(null);
+    setDeckRevising(true);
+    const targetGlobalIndex = activeSlide?.globalIndex ?? 0;
+    try {
+      const res = await fetch("/api/deck-revise", {
+        method: "POST",
+        body: JSON.stringify({
+          intake,
+          plan,
+          manifest: deckManifest,
+          chapterIndex: deckReviseTarget.chapterIndex,
+          slideIndex: deckReviseTarget.slideIndex,
+          instruction: text,
+        }),
+      });
+      const data = await res.json();
+      if (data.error) throw new Error(data.error);
+      patch({ deckManifest: data.manifest as DeckManifest });
+      pushMessage({ kind: "agent-text", text: data.note || "Slide updated." });
+      setDeckComposerText("");
+      setDeckReviseTarget(null);
+      // The iframe reload (triggered by the new generatedAt in its src) will
+      // re-broadcast the active slide once it repaints at the same index —
+      // pre-seed it now too so the sidebar label doesn't flicker to blank.
+      setActiveSlide((s) => (s ? { ...s, globalIndex: targetGlobalIndex } : s));
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Slide revision failed.");
+    } finally {
+      setDeckRevising(false);
     }
   }
 
@@ -403,6 +469,14 @@ export function RevPlanApp() {
   const shipChecks = plan && auditFindings ? computeShipGate({ plan, findings: auditFindings, ceilingAccepted }) : null;
   const shipClean = shipChecks?.every((c) => c.passed) ?? false;
 
+  // The generatedAt timestamp changes on every generate/revise, so folding
+  // it into the query string forces the iframe to actually reload instead
+  // of silently keeping the previous file cached; slide= re-opens on the
+  // same slide that was just edited rather than resetting to the cover.
+  const deckPath = deckManifest
+    ? `/decks/${deckManifest.slug}.html?slide=${activeSlide?.globalIndex ?? 0}&v=${encodeURIComponent(deckManifest.generatedAt)}`
+    : null;
+
   const stage: Stage =
     phase === "intake" || phase === "probing" || phase === "ready"
       ? "scoping"
@@ -438,12 +512,33 @@ export function RevPlanApp() {
     <div style={{ height: "100vh", display: "flex", flexDirection: "column", fontFamily: "var(--db-font-body, sans-serif)", background: "var(--db-paper, #fff)", overflow: "hidden" }}>
       <Header
         stage={stage}
-        onToggleFrameworks={() => { setFrameworksOpen((v) => !v); setContextOpen(false); setAuditOpen(false); setDeckOpen(false); }}
-        onToggleContext={() => { setContextOpen((v) => !v); setFrameworksOpen(false); setAuditOpen(false); setDeckOpen(false); }}
-        onToggleAudit={() => { setAuditOpen((v) => !v); setFrameworksOpen(false); setContextOpen(false); setDeckOpen(false); }}
-        onToggleDeck={() => { setDeckOpen((v) => !v); setFrameworksOpen(false); setContextOpen(false); setAuditOpen(false); }}
+        viewMode={viewMode}
+        onToggleFrameworks={() => { setFrameworksOpen((v) => !v); setContextOpen(false); setAuditOpen(false); }}
+        onToggleContext={() => { setContextOpen((v) => !v); setFrameworksOpen(false); setAuditOpen(false); }}
+        onToggleAudit={() => { setAuditOpen((v) => !v); setFrameworksOpen(false); setContextOpen(false); }}
+        onSwitchToDeck={() => setViewMode("deck")}
+        onSwitchToPlan={() => setViewMode("plan")}
       />
 
+      {viewMode === "deck" ? (
+        <DeckView
+          manifest={deckManifest}
+          deckPath={deckPath}
+          iframeRef={deckIframeRef}
+          hasPlan={!!plan}
+          shipClean={shipClean}
+          generating={deckBusy}
+          revising={deckRevising}
+          activeSlide={activeSlide}
+          reviseTarget={deckReviseTarget}
+          composerText={deckComposerText}
+          error={error}
+          onGenerate={handleGenerateDeck}
+          onReviseClick={handleDeckReviseClick}
+          onComposerChange={setDeckComposerText}
+          onSend={handleDeckComposerSend}
+        />
+      ) : (
       <div style={{ flex: 1, display: "flex", minHeight: 0 }}>
         <div style={{ width: 400, flex: "none", display: "flex", flexDirection: "column", borderRight: "1px solid var(--db-line, #ddd)", minHeight: 0 }}>
           <div style={{ display: "flex", gap: 6, padding: "14px 16px", borderBottom: "1px solid var(--db-line, #ddd)", flex: "none" }}>
@@ -610,16 +705,8 @@ export function RevPlanApp() {
           ceilingAccepted={ceilingAccepted}
           onAcceptCeiling={() => patch({ ceilingAccepted: true })}
         />
-        <DeckDrawer
-          open={deckOpen}
-          hasPlan={!!plan}
-          shipClean={shipClean}
-          busy={deckBusy}
-          deckPath={deck?.path ?? null}
-          generatedAt={deck?.generatedAt ?? null}
-          onGenerate={handleGenerateDeck}
-        />
       </div>
+      )}
     </div>
   );
 }

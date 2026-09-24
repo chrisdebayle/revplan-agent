@@ -15,10 +15,15 @@ function esc(s: string): string {
     .replace(/'/g, "&#39;");
 }
 
-function renderSlide(slide: DeckSlide, chapterIndex: number): string {
+// slideIdx is -1 for the cover (not addressable by the revise flow — it's
+// synthesized from manifest fields, not a stored DeckChapter slide) and the
+// slide's own index within its chapter's slides[] array otherwise. Combined
+// with chapterIndex, this is how the in-app editable preview tells the
+// parent window which exact manifest slide is on screen.
+function renderSlide(slide: DeckSlide, chapterIndex: number, slideIdx: number): string {
   switch (slide.kind) {
     case "cover":
-      return `<section class="slide" data-ch="${chapterIndex}"><div class="inner">
+      return `<section class="slide" data-ch="${chapterIndex}" data-slide-idx="${slideIdx}"><div class="inner">
         <div class="eyebrow">${esc(slide.eyebrow)}</div>
         <h1>${esc(slide.title)}</h1>
         <div class="rule"></div>
@@ -26,7 +31,7 @@ function renderSlide(slide: DeckSlide, chapterIndex: number): string {
       </div></section>`;
 
     case "divider":
-      return `<section class="slide" data-ch="${chapterIndex}"><div class="inner">
+      return `<section class="slide" data-ch="${chapterIndex}" data-slide-idx="${slideIdx}"><div class="inner">
         <div class="divider">
           <div class="dnum">${esc(slide.chapterNumber)}</div>
           <h1 class="light">${esc(slide.title)}</h1>
@@ -36,7 +41,7 @@ function renderSlide(slide: DeckSlide, chapterIndex: number): string {
       </div></section>`;
 
     case "statement":
-      return `<section class="slide" data-ch="${chapterIndex}"><div class="inner">
+      return `<section class="slide" data-ch="${chapterIndex}" data-slide-idx="${slideIdx}"><div class="inner">
         ${slide.eyebrow ? `<div class="eyebrow">${esc(slide.eyebrow)}</div>` : ""}
         <div class="statement">${esc(slide.text)}</div>
         ${
@@ -47,14 +52,14 @@ function renderSlide(slide: DeckSlide, chapterIndex: number): string {
       </div></section>`;
 
     case "quote":
-      return `<section class="slide" data-ch="${chapterIndex}"><div class="inner">
+      return `<section class="slide" data-ch="${chapterIndex}" data-slide-idx="${slideIdx}"><div class="inner">
         ${slide.eyebrow ? `<div class="eyebrow">${esc(slide.eyebrow)}</div>` : ""}
         <div class="quote">${esc(slide.quote)}<span class="src">${esc(slide.source)}</span></div>
         ${slide.note ? `<div class="note">${esc(slide.note)}</div>` : ""}
       </div></section>`;
 
     case "cards":
-      return `<section class="slide" data-ch="${chapterIndex}"><div class="inner">
+      return `<section class="slide" data-ch="${chapterIndex}" data-slide-idx="${slideIdx}"><div class="inner">
         ${slide.eyebrow ? `<div class="eyebrow">${esc(slide.eyebrow)}</div>` : ""}
         <div class="grid g${slide.columns}">
           ${slide.cards
@@ -70,7 +75,7 @@ function renderSlide(slide: DeckSlide, chapterIndex: number): string {
       </div></section>`;
 
     case "stats":
-      return `<section class="slide" data-ch="${chapterIndex}"><div class="inner">
+      return `<section class="slide" data-ch="${chapterIndex}" data-slide-idx="${slideIdx}"><div class="inner">
         ${slide.eyebrow ? `<div class="eyebrow">${esc(slide.eyebrow)}</div>` : ""}
         <div class="grid g3">
           ${slide.stats
@@ -87,7 +92,7 @@ function renderSlide(slide: DeckSlide, chapterIndex: number): string {
       </div></section>`;
 
     case "list":
-      return `<section class="slide" data-ch="${chapterIndex}"><div class="inner">
+      return `<section class="slide" data-ch="${chapterIndex}" data-slide-idx="${slideIdx}"><div class="inner">
         ${slide.eyebrow ? `<div class="eyebrow">${esc(slide.eyebrow)}</div>` : ""}
         <ul class="list">
           ${slide.items.map((it, i) => `<li><span class="n">${String(i + 1).padStart(2, "0")}</span>${esc(it)}</li>`).join("")}
@@ -96,7 +101,7 @@ function renderSlide(slide: DeckSlide, chapterIndex: number): string {
       </div></section>`;
 
     case "gaterow":
-      return `<section class="slide" data-ch="${chapterIndex}"><div class="inner">
+      return `<section class="slide" data-ch="${chapterIndex}" data-slide-idx="${slideIdx}"><div class="inner">
         ${slide.eyebrow ? `<div class="eyebrow">${esc(slide.eyebrow)}</div>` : ""}
         <div class="rail">
           ${slide.gates
@@ -120,7 +125,7 @@ function renderSlide(slide: DeckSlide, chapterIndex: number): string {
       </div></section>`;
 
     case "closing":
-      return `<section class="slide" data-ch="${chapterIndex}"><div class="inner">
+      return `<section class="slide" data-ch="${chapterIndex}" data-slide-idx="${slideIdx}"><div class="inner">
         <div class="eyebrow">${esc(slide.eyebrow)}</div>
         <h1>${esc(slide.title)}</h1>
         <div class="rule"></div>
@@ -217,14 +222,25 @@ function navScript(chapterFirstIndices: number[], chapterTitles: string[]): stri
       nav.appendChild(b);
     });
     var navBtns = Array.prototype.slice.call(nav.querySelectorAll("button"));
+    // Editable-preview bridge: when this deck is iframed by the authoring
+    // app, tell the parent which manifest slide is on screen every time it
+    // changes, so the app's "Revise this slide" action always targets what
+    // you're actually looking at. A no-op when opened standalone (top-level
+    // window) or by any other embedder that isn't listening for this.
+    function notifyParent(ci, slideIdx){
+      if (window.parent === window) return;
+      window.parent.postMessage({ type: "revplan-active-slide", chapterIndex: ci, slideIndex: slideIdx, globalIndex: cur, total: total }, "*");
+    }
     function paint(){
       var s = slides[cur];
       var ci = parseInt(s.dataset.ch, 10);
+      var slideIdx = parseInt(s.dataset.slideIdx, 10);
       root.style.setProperty("--view", CH[ci].c);
       document.getElementById("cnum").textContent = String(cur + 1).padStart(2, "0");
       document.getElementById("cname").textContent = CH[ci].t;
       document.getElementById("progress").style.width = ((cur + 1) / total * 100) + "%";
       navBtns.forEach(function(b, i){ b.classList.toggle("active", i === ci); });
+      notifyParent(ci, slideIdx);
     }
     function go(i){
       if (i < 0 || i >= total || i === cur) return;
@@ -245,6 +261,12 @@ function navScript(chapterFirstIndices: number[], chapterTitles: string[]): stri
       var d = e.changedTouches[0].screenX - tx;
       if (Math.abs(d) > 50) go(d < 0 ? cur + 1 : cur - 1);
     });
+    var startAt = parseInt(new URLSearchParams(location.search).get("slide") || "0", 10);
+    if (startAt > 0 && startAt < total) {
+      slides[0].classList.remove("active");
+      cur = startAt;
+      slides[cur].classList.add("active");
+    }
     paint();
   })();`;
 }
@@ -260,8 +282,8 @@ export function renderDeckHtml(manifest: DeckManifest): string {
 
   manifest.chapters.forEach((ch: DeckChapter, i: number) => {
     chapterFirstIndices.push(slidesFlat.length + 1); // +1 to account for the cover slide inserted at position 0
-    ch.slides.forEach((slide) => {
-      slidesFlat.push({ html: renderSlide(slide, i), chapterIndex: i });
+    ch.slides.forEach((slide, slideIdx) => {
+      slidesFlat.push({ html: renderSlide(slide, i, slideIdx), chapterIndex: i });
     });
   });
 
@@ -271,7 +293,7 @@ export function renderDeckHtml(manifest: DeckManifest): string {
     title: manifest.companyTitle,
     lede: manifest.preparedBy,
   };
-  const allSlidesHtml = [renderSlide(coverSlide, coverChapterIndex), ...slidesFlat.map((s) => s.html)];
+  const allSlidesHtml = [renderSlide(coverSlide, coverChapterIndex, -1), ...slidesFlat.map((s) => s.html)];
   // First slide gets the "active" class so it's visible on load.
   const firstSlideHtml = allSlidesHtml[0].replace('class="slide"', 'class="slide active"');
   const restSlidesHtml = allSlidesHtml.slice(1).join("");
