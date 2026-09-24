@@ -42,6 +42,23 @@ needed.
 - **Context Summary (§10)** — populates live from real state: intake and
   probe answers verbatim, frameworks used, unowned areas, and every
   Requires-Data item pulled straight out of the plan's own evidence tags.
+- **Audit pass (§7)** — a distinct turn (`/api/audit`) that reviews the
+  drafted plan, never rewrites it, and returns severity-tagged findings
+  (critical/moderate/minor) across all seven §7 categories. Findings live in
+  the "Audit & Ship" drawer; moderate/minor ones can be Accepted or
+  Dismissed, critical ones only clear by revising the section. Revising a
+  section clears its stale findings automatically and says so in the chat
+  log, per §13's re-audit rule.
+- **Ship Gate (§9)** — computed deterministically in `src/lib/shipGate.ts`,
+  not asked of the model again: audit-clean and evidence-tiered read off the
+  audit findings, framework-named/within-ceiling/requests-consolidated are
+  checked directly against the plan. Updates live as you accept findings or
+  revise sections. An over-ceiling plan can be explicitly accepted rather
+  than blocked forever.
+- **File ingestion, including PDF/DOCX** — `.md/.markdown/.txt/.srt/.vtt` are
+  read client-side; `.pdf` (via `pdf-parse`) and `.docx` (via `mammoth`) are
+  sent to `/api/parse-file` and extracted server-side. Legacy `.doc` (the
+  pre-2007 binary format) isn't supported — only `.docx`.
 - **Design system reuse** — `Section`, `StepLadder`, `DataTable`, `RulesList`
   from the Chris Debayle Brand Components bundle (`_ds/`) are loaded at
   runtime in `src/components/DsProvider.tsx`, per HANDOFF.md's instruction
@@ -55,19 +72,16 @@ needed.
 
 Carried over from HANDOFF.md's original list, still open:
 
-- **Audit pass (§7)** and **Ship Gate (§9)** as their own distinct turn. The
-  stage stepper shows Audit/Ship but they're inert. Revisions that flag
-  `target-changed` / `framework-routing-changed` / `assumption-changed` say
-  so in the chat log, but nothing automatically re-runs against them yet.
-- **File ingestion is partial** — `.md`/`.markdown`/`.txt`/`.srt`/`.vtt` get
-  read client-side and passed into the draft prompt as reference context.
-  `.pdf`/`.doc`/`.docx` are attached for the record but not parsed. Nothing
-  auto-tiers extracted claims yet (§3's tiers still apply, but the model does
-  that tiering at draft time, not a dedicated pre-pass).
 - **Pre-PMF Lean Canvas exit route (§1.1)** — not built; still an open
   question per HANDOFF.md.
 - **Multi-build history** — one localStorage slot, no way to save/switch
   between multiple companies yet.
+- **Generation speed** — drafting and auditing are both single large
+  synchronous calls; see the note below.
+- Revisions that flag `target-changed` / `framework-routing-changed` /
+  `assumption-changed` say so in the chat log and clear that section's stale
+  findings, but don't automatically re-run a full audit — you re-run it
+  yourself from the Audit & Ship drawer.
 
 ## A note on generation time and length
 

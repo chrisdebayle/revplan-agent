@@ -116,3 +116,24 @@ export interface ContextSummary {
 }
 
 export type Stage = "scoping" | "drafting" | "audit" | "ship";
+
+export type FindingSeverity = "critical" | "moderate" | "minor";
+export type FindingStatus = "open" | "accepted" | "resolved";
+
+export interface AuditFinding {
+  id: string;
+  sectionId: string | null; // matches a PlanSection.id, "exec-summary", or null for plan-wide
+  sectionLabel: string; // display label, always present even when sectionId doesn't resolve
+  problemType: string; // §7 category: Logic integrity, Internal consistency, Evidence integrity, Framework fidelity, Structural assessment, Credibility risk, Audience fit
+  severity: FindingSeverity;
+  description: string;
+  recommendedFix: string;
+  status: FindingStatus;
+}
+
+export interface ShipGateCheck {
+  key: string;
+  label: string;
+  passed: boolean;
+  detail: string;
+}

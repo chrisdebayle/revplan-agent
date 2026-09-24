@@ -5,6 +5,7 @@ import {
   EMPTY_INTAKE,
   REQUIRED_INTAKE_FIELDS,
   type AttachedFile,
+  type AuditFinding,
   type ChatMessage,
   type ContextSummary,
   type IntakeBlock,
@@ -16,6 +17,7 @@ import {
 } from "@/lib/types";
 import { countMarkupWords } from "@/lib/evidence";
 import { formatIntakeVerbatim, formatProbeAnswersVerbatim, extractRequiresData } from "@/lib/contextSummary";
+import { computeShipGate } from "@/lib/shipGate";
 import { useLocalState } from "@/lib/useLocalState";
 import { Header } from "./Header";
 import { ChatLog } from "./ChatLog";
@@ -23,6 +25,7 @@ import { IntakeForm } from "./IntakeForm";
 import { ProbeForm } from "./ProbeForm";
 import { PlanView } from "./PlanView";
 import { FrameworksDrawer, ContextDrawer } from "./Drawers";
+import { AuditDrawer } from "./AuditDrawer";
 
 type Phase = "intake" | "probing" | "ready" | "drafting" | "drafted";
 
@@ -43,6 +46,8 @@ interface PersistedState {
   bypassedNotes: string[];
   plan: RevenuePlan | null;
   draftContext: DraftContext | null;
+  auditFindings: AuditFinding[] | null;
+  ceilingAccepted: boolean;
 }
 
 const INITIAL: PersistedState = {
@@ -55,9 +60,12 @@ const INITIAL: PersistedState = {
   bypassedNotes: [],
   plan: null,
   draftContext: null,
+  auditFindings: null,
+  ceilingAccepted: false,
 };
 
-const PARSEABLE_EXT = new Set(["md", "markdown", "txt", "srt", "vtt"]);
+const CLIENT_PARSEABLE_EXT = new Set(["md", "markdown", "txt", "srt", "vtt"]);
+const SERVER_PARSEABLE_EXT = new Set(["pdf", "docx"]);
 
 function wordCountForPlan(plan: Pick<RevenuePlan, "execSummaryMarkup" | "sections">): number {
   return (
@@ -75,7 +83,7 @@ function sectionTitleFor(plan: RevenuePlan | null, sectionId: string): string {
 
 export function RevPlanApp() {
   const [state, setState] = useLocalState<PersistedState>(INITIAL);
-  const { intake, phase, messages, probeQuestions, probeAnswers, attachments, bypassedNotes, plan, draftContext } = state;
+  const { intake, phase, messages, probeQuestions, probeAnswers, attachments, bypassedNotes, plan, draftContext, auditFindings, ceilingAccepted } = state;
 
   const [reviseTarget, setReviseTarget] = useState<string | null>(null);
   const [composerText, setComposerText] = useState("");
@@ -83,6 +91,8 @@ export function RevPlanApp() {
   const [error, setError] = useState<string | null>(null);
   const [frameworksOpen, setFrameworksOpen] = useState(false);
   const [contextOpen, setContextOpen] = useState(false);
+  const [auditOpen, setAuditOpen] = useState(false);
+  const [auditBusy, setAuditBusy] = useState(false);
 
   const composerRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -192,7 +202,7 @@ export function RevPlanApp() {
       });
       pushMessage({
         kind: "agent-text",
-        text: `Draft ready — v1, ${newPlan.wordCount} words. Audit pass and ship gate aren't built yet in this pass (see HANDOFF.md) — read this as a first draft, not a shipped one.`,
+        text: `Draft ready — v1, ${newPlan.wordCount} words. Run Audit (§7) from the header before treating this as more than a first draft — nothing's ship-clean until §9 clears.`,
       });
     } catch (e) {
       setError(e instanceof Error ? e.message : "Draft generation failed.");
@@ -247,12 +257,16 @@ export function RevPlanApp() {
         };
       }
       updatedPlan.wordCount = wordCountForPlan(updatedPlan);
-      patch({ plan: updatedPlan });
 
-      const flagNote = data.flags?.length
-        ? ` This also changes ${data.flags.join(", ")} — worth a full re-audit once that pass is built (§13).`
+      const staleCount = (auditFindings || []).filter((f) => f.sectionId === reviseTarget).length;
+      const survivingFindings = (auditFindings || []).filter((f) => f.sectionId !== reviseTarget);
+      patch({ plan: updatedPlan, auditFindings: staleCount ? survivingFindings : auditFindings });
+
+      const flagNote = data.flags?.length ? ` This also changes ${data.flags.join(", ")}.` : "";
+      const staleNote = staleCount
+        ? ` Cleared ${staleCount} audit finding${staleCount > 1 ? "s" : ""} for this section — re-run Audit before shipping (§13).`
         : "";
-      pushMessage({ kind: "agent-text", text: `${data.note || "Scoped edit applied."}${flagNote}` });
+      pushMessage({ kind: "agent-text", text: `${data.note || "Scoped edit applied."}${flagNote}${staleNote}` });
     } catch (e) {
       setError(e instanceof Error ? e.message : "Revision failed.");
     } finally {
@@ -261,28 +275,85 @@ export function RevPlanApp() {
     }
   }
 
+  async function handleRunAudit() {
+    if (!plan) return;
+    setError(null);
+    setAuditBusy(true);
+    try {
+      const res = await fetch("/api/audit", {
+        method: "POST",
+        body: JSON.stringify({ intake, probeAnswers, plan }),
+      });
+      const data = await res.json();
+      if (data.error) throw new Error(data.error);
+      patch({ auditFindings: data.findings as AuditFinding[], ceilingAccepted: false });
+      const critical = (data.findings as AuditFinding[]).filter((f) => f.severity === "critical").length;
+      const moderate = (data.findings as AuditFinding[]).filter((f) => f.severity === "moderate").length;
+      pushMessage({
+        kind: "agent-text",
+        text:
+          data.findings.length === 0
+            ? "Audit ran clean — no findings."
+            : `Audit found ${data.findings.length} issue${data.findings.length > 1 ? "s" : ""} (${critical} critical, ${moderate} moderate). See Audit & Ship in the header.`,
+      });
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Audit failed.");
+    } finally {
+      setAuditBusy(false);
+    }
+  }
+
+  function handleAcceptFinding(id: string) {
+    patch({ auditFindings: (auditFindings || []).map((f) => (f.id === id ? { ...f, status: "accepted" } : f)) });
+  }
+
+  function handleDismissFinding(id: string) {
+    patch({ auditFindings: (auditFindings || []).map((f) => (f.id === id ? { ...f, status: "resolved" } : f)) });
+  }
+
+  function handleJumpToReviseFromAudit(sectionId: string) {
+    setAuditOpen(false);
+    handleReviseClick(sectionId);
+  }
+
   function handleFiles(e: ChangeEvent<HTMLInputElement>) {
     const files = Array.from(e.target.files || []);
     if (!files.length) return;
     const results: AttachedFile[] = [];
     let pending = files.length;
+    const settle = () => {
+      if (--pending === 0) finishAttach(results);
+    };
 
     files.forEach((f) => {
       const ext = (f.name.split(".").pop() || "").toLowerCase();
-      if (PARSEABLE_EXT.has(ext)) {
+      if (CLIENT_PARSEABLE_EXT.has(ext)) {
         const reader = new FileReader();
         reader.onload = () => {
           results.push({ name: f.name, ext: ext.toUpperCase(), text: String(reader.result || "") });
-          if (--pending === 0) finishAttach(results);
+          settle();
         };
         reader.onerror = () => {
           results.push({ name: f.name, ext: ext.toUpperCase(), unparsed: true });
-          if (--pending === 0) finishAttach(results);
+          settle();
         };
         reader.readAsText(f);
+      } else if (SERVER_PARSEABLE_EXT.has(ext)) {
+        const form = new FormData();
+        form.append("file", f);
+        fetch("/api/parse-file", { method: "POST", body: form })
+          .then((res) => res.json())
+          .then((data) => {
+            if (data.error) throw new Error(data.error);
+            results.push({ name: f.name, ext: ext.toUpperCase(), text: data.text as string });
+          })
+          .catch(() => {
+            results.push({ name: f.name, ext: ext.toUpperCase(), unparsed: true });
+          })
+          .finally(settle);
       } else {
         results.push({ name: f.name, ext: ext.toUpperCase(), unparsed: true });
-        if (--pending === 0) finishAttach(results);
+        settle();
       }
     });
 
@@ -297,14 +368,24 @@ export function RevPlanApp() {
       text:
         parsedCount > 0
           ? `${parsedCount} file${parsedCount > 1 ? "s" : ""} parsed. Tiering happens at draft time — attachment text is context, not automatically Sourced.${
-              files.length > parsedCount ? " PDF/Word/other formats aren't parsed in this build yet — attached for the record only." : ""
+              files.length > parsedCount ? " Legacy .doc isn't parsed — only .docx (Word's XML format)." : ""
             }`
-          : "Attached, but this build only parses .md/.markdown/.txt/.srt/.vtt today — noted for the record, not read into context.",
+          : "Attached, but couldn't extract text — only .md/.markdown/.txt/.srt/.vtt, .pdf, and .docx are supported.",
     });
     setState((s) => ({ ...s, attachments: [...s.attachments, ...files] }));
   }
 
-  const stage: Stage = phase === "intake" || phase === "probing" || phase === "ready" ? "scoping" : "drafting";
+  const shipChecks = plan && auditFindings ? computeShipGate({ plan, findings: auditFindings, ceilingAccepted }) : null;
+  const shipClean = shipChecks?.every((c) => c.passed) ?? false;
+
+  const stage: Stage =
+    phase === "intake" || phase === "probing" || phase === "ready"
+      ? "scoping"
+      : !plan || !auditFindings
+        ? "drafting"
+        : shipClean
+          ? "ship"
+          : "audit";
 
   const contextSummary: ContextSummary | null =
     phase === "intake" && messages.length <= 1
@@ -316,14 +397,26 @@ export function RevPlanApp() {
           frameworksUsed: draftContext?.frameworksUsed.join(", ") || "—",
           unownedAreas: draftContext?.unownedAreas.join("\n") || "—",
           scopingDecisions: draftContext?.scopingDecisions.join("\n") || "—",
-          unresolved: [...bypassedNotes, ...(plan ? extractRequiresData(plan) : [])].join("\n") || "—",
+          unresolved:
+            [
+              ...bypassedNotes,
+              ...(plan ? extractRequiresData(plan) : []),
+              ...(auditFindings || [])
+                .filter((f) => f.status === "open" && f.severity !== "minor")
+                .map((f) => `${f.severity} — ${f.sectionLabel}: ${f.description}`),
+            ].join("\n") || "—",
           sectionsAdded: "—",
           sectionsCut: draftContext?.sectionsCut.join(", ") || "None",
         };
 
   return (
     <div style={{ height: "100vh", display: "flex", flexDirection: "column", fontFamily: "var(--db-font-body, sans-serif)", background: "var(--db-paper, #fff)", overflow: "hidden" }}>
-      <Header stage={stage} onToggleFrameworks={() => { setFrameworksOpen((v) => !v); setContextOpen(false); }} onToggleContext={() => { setContextOpen((v) => !v); setFrameworksOpen(false); }} />
+      <Header
+        stage={stage}
+        onToggleFrameworks={() => { setFrameworksOpen((v) => !v); setContextOpen(false); setAuditOpen(false); }}
+        onToggleContext={() => { setContextOpen((v) => !v); setFrameworksOpen(false); setAuditOpen(false); }}
+        onToggleAudit={() => { setAuditOpen((v) => !v); setFrameworksOpen(false); setContextOpen(false); }}
+      />
 
       <div style={{ flex: 1, display: "flex", minHeight: 0 }}>
         <div style={{ width: 400, flex: "none", display: "flex", flexDirection: "column", borderRight: "1px solid var(--db-line, #ddd)", minHeight: 0 }}>
@@ -478,6 +571,19 @@ export function RevPlanApp() {
 
         <FrameworksDrawer open={frameworksOpen} />
         <ContextDrawer open={contextOpen} summary={contextSummary} />
+        <AuditDrawer
+          open={auditOpen}
+          plan={plan}
+          findings={auditFindings}
+          shipChecks={shipChecks}
+          auditBusy={auditBusy}
+          onRunAudit={handleRunAudit}
+          onAccept={handleAcceptFinding}
+          onDismiss={handleDismissFinding}
+          onJumpToRevise={handleJumpToReviseFromAudit}
+          ceilingAccepted={ceilingAccepted}
+          onAcceptCeiling={() => patch({ ceilingAccepted: true })}
+        />
       </div>
     </div>
   );

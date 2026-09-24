@@ -36,6 +36,11 @@ export async function complete(params: {
   const stream = anthropic.messages.stream({
     model: MODEL,
     max_tokens: params.maxTokens ?? 4096,
+    // Without this, claude-sonnet-5 defaults to "adaptive" thinking — it can
+    // spend the entire max_tokens budget on an invisible thinking block and
+    // return zero text (observed: 8000/8000 tokens as thinking, no text at
+    // all). We want plain structured-JSON output, not visible reasoning.
+    thinking: { type: "disabled" },
     system: params.system,
     messages: [{ role: "user", content: params.user }],
   });
