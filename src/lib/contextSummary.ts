@@ -8,19 +8,19 @@ export function formatIntakeVerbatim(intake: IntakeBlock): string {
     `SEGMENT FOCUS: ${intake.segmentFocus}`,
     `MOTION: ${intake.motion}`,
     `TARGET: ${intake.target}`,
-    `TARGET PROVENANCE: ${intake.targetProvenance || "—"}`,
-    `GEO: ${intake.geo || "—"}`,
-    `PRICING MODEL: ${intake.pricingModel || "—"}`,
-    `REFERENCE MATERIAL: ${intake.referenceMaterial || "—"}`,
-    `KNOWN COMPETITORS: ${intake.knownCompetitors || "—"}`,
-    `DATA AVAILABLE: ${intake.dataAvailable || "—"}`,
-    `WHAT I ALREADY KNOW: ${intake.whatIAlreadyKnow || "—"}`,
-    `BLIND SPOTS: ${intake.blindSpots || "—"}`,
+    `TARGET PROVENANCE: ${intake.targetProvenance || "(none)"}`,
+    `GEO: ${intake.geo || "(none)"}`,
+    `PRICING MODEL: ${intake.pricingModel || "(none)"}`,
+    `REFERENCE MATERIAL: ${intake.referenceMaterial || "(none)"}`,
+    `KNOWN COMPETITORS: ${intake.knownCompetitors || "(none)"}`,
+    `DATA AVAILABLE: ${intake.dataAvailable || "(none)"}`,
+    `WHAT I ALREADY KNOW: ${intake.whatIAlreadyKnow || "(none)"}`,
+    `BLIND SPOTS: ${intake.blindSpots || "(none)"}`,
   ].join("\n");
 }
 
 export function formatProbeAnswersVerbatim(answers: ProbeAnswer[]): string {
-  if (!answers.length) return "(none — intake cleared scoping with no probes needed)";
+  if (!answers.length) return "(none, intake cleared scoping with no probes needed)";
   return answers.map((a) => `Q: ${a.question}\nA: ${a.answer}`).join("\n\n");
 }
 
@@ -42,7 +42,7 @@ export function extractRequiresData(plan: RevenuePlan): string[] {
   scan(plan.execSummaryMarkup);
   plan.sections.forEach((s) => scan(s.bodyMarkup));
   plan.kpiRows.forEach((r) => {
-    if (/requires data/i.test(r.target)) items.add(`KPI target — ${r.metric}: ${r.target}`);
+    if (/requires data/i.test(r.target)) items.add(`KPI target, ${r.metric}: ${r.target}`);
   });
   return Array.from(items);
 }

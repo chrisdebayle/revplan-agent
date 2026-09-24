@@ -1,8 +1,8 @@
 # Revenue Plan OS
 
 A personal agent for building revenue plans during interviews and once in-seat.
-The operating doctrine — mode selection, scoping gate, evidence standard,
-framework routing, output structure, audit, ship gate — lives in
+The operating doctrine (mode selection, scoping gate, evidence standard,
+framework routing, output structure, audit, ship gate) lives in
 [`uploads/Revenue_Plan_OS.md`](uploads/Revenue_Plan_OS.md), the spec of
 record. See [`HANDOFF.md`](HANDOFF.md) for the original UI-mockup handoff
 notes this build grew out of.
@@ -15,7 +15,7 @@ cp .env.local.example .env.local   # then add your own ANTHROPIC_API_KEY
 npm run dev
 ```
 
-Open http://localhost:3000. `.env.local` is gitignored — your key never gets
+Open http://localhost:3000. `.env.local` is gitignored; your key never gets
 committed.
 
 Get a key at https://console.anthropic.com/settings/keys. The default model
@@ -24,94 +24,94 @@ needed.
 
 ## What's built (core loop)
 
-- **Real scoping gate (§2)** — the intake form feeds `/api/probe`, which asks
+- **Real scoping gate (§2)**: the intake form feeds `/api/probe`, which asks
   Claude to apply §2.2's gap-probe rules and return up to five ranked
   questions, or clear straight to drafting. "Build anyway" bypasses and logs
   the gap.
-- **Real drafting (§4, §5/§6.2, §11)** — `/api/draft` sends the full doctrine
+- **Real drafting (§4, §5/§6.2, §11)**: `/api/draft` sends the full doctrine
   as the system prompt plus the intake, probe answers, and any parsed
   attachments, and gets back a structured plan: sections, KPI table, and
   either Week One asks (Interview mode) or an Assumptions Register (Internal
   mode).
-- **Evidence tiers (§3)** — the model tags every figure inline as
+- **Evidence tiers (§3)**: the model tags every figure inline as
   `{{S|...}}` / `{{D|...}}` / `{{A|...}}` / `{{RD|...}}`; the UI renders
   those as hoverable superscripts, exactly like the original mockup.
-- **Section-scoped revision (§13)** — click Revise on any prose section,
+- **Section-scoped revision (§13)**: click Revise on any prose section,
   finish the instruction in the composer, and `/api/revise` regenerates only
   that section.
-- **Context Summary (§10)** — populates live from real state: intake and
+- **Context Summary (§10)**: populates live from real state: intake and
   probe answers verbatim, frameworks used, unowned areas, and every
   Requires-Data item pulled straight out of the plan's own evidence tags.
-- **Audit pass (§7)** — a distinct turn (`/api/audit`) that reviews the
+- **Audit pass (§7)**: a distinct turn (`/api/audit`) that reviews the
   drafted plan, never rewrites it, and returns severity-tagged findings
   (critical/moderate/minor) across all seven §7 categories. Findings live in
   the "Audit & Ship" drawer; moderate/minor ones can be Accepted or
   Dismissed, critical ones only clear by revising the section. Revising a
   section clears its stale findings automatically and says so in the chat
   log, per §13's re-audit rule.
-- **Ship Gate (§9)** — computed deterministically in `src/lib/shipGate.ts`,
+- **Ship Gate (§9)**: computed deterministically in `src/lib/shipGate.ts`,
   not asked of the model again: audit-clean and evidence-tiered read off the
   audit findings, framework-named/within-ceiling/requests-consolidated are
   checked directly against the plan. Updates live as you accept findings or
   revise sections. An over-ceiling plan can be explicitly accepted rather
   than blocked forever.
-- **File ingestion, including PDF/DOCX** — `.md/.markdown/.txt/.srt/.vtt` are
+- **File ingestion, including PDF/DOCX**: `.md/.markdown/.txt/.srt/.vtt` are
   read client-side; `.pdf` (via `pdf-parse`) and `.docx` (via `mammoth`) are
   sent to `/api/parse-file` and extracted server-side. Legacy `.doc` (the
-  pre-2007 binary format) isn't supported — only `.docx`.
-- **Design system reuse** — `Section`, `StepLadder`, `DataTable`, `RulesList`
+  pre-2007 binary format) isn't supported, only `.docx`.
+- **Design system reuse**: `Section`, `StepLadder`, `DataTable`, `RulesList`
   from the Chris Debayle Brand Components bundle (`_ds/`) are loaded at
   runtime in `src/components/DsProvider.tsx`, per HANDOFF.md's instruction
   to reuse rather than rebuild them. Falls back to plain styled markup if the
   bundle fails to load.
-- **Local persistence** — the whole session (intake, chat log, plan) is
+- **Local persistence**: the whole session (intake, chat log, plan) is
   saved to `localStorage` so a page refresh doesn't lose work. Single slot,
-  single user — this is a personal tool, not a multi-project app yet.
-- **Deck** — the shippable artifact, with its own full view (header's "Deck"
+  single user; this is a personal tool, not a multi-project app yet.
+- **Deck**: the shippable artifact, with its own full view (header's "Deck"
   toggle). `/api/deck` translates the audited plan into a standalone,
   self-contained HTML slide deck (`public/decks/<slug>.html`) in the visual
   language and interaction model of `deck-example-tradeform.html` (dark
   theme, chapter nav, keyboard/swipe navigation, a fixed vocabulary of slide
-  shapes — cover, chapter divider, statement, quote, cards, stats, list,
+  shapes: cover, chapter divider, statement, quote, cards, stats, list,
   gaterow, closing). The plan stays the source of truth; the deck strips all
   doctrine notation ({{TIER|detail}} tags, tier names, section numbers) and
   translates substance into plain business language. Written straight into
   `public/`, so it's live at `/decks/<slug>.html` the moment it's generated,
-  and it's an ordinary committed file from there — review with `git diff`,
+  and it's an ordinary committed file from there: review with `git diff`,
   commit and push like anything else. Generation isn't gated on Ship Gate
   being clean; if it isn't, the deck says so once, briefly, wherever it fits
   naturally rather than blocking the preview.
-- **Deck editing, slide by slide** — the Deck view renders the real deck
+- **Deck editing, slide by slide**: the Deck view renders the real deck
   live in an iframe; navigate it (arrow keys / the deck's own prev-next) to
   the slide you want to change, click "Revise this slide," describe the
-  change, and `/api/deck-revise` regenerates just that one slide — content
-  only, it can't add/remove/reorder slides or chapters. The deck's own nav
+  change, and `/api/deck-revise` regenerates just that one slide, content
+  only; it can't add/remove/reorder slides or chapters. The deck's own nav
   script posts the active slide back to the parent app on every navigation
   (`window.postMessage`, inert when the file is opened standalone), so the
   sidebar always knows exactly what's on screen. The cover slide isn't
-  revisable this way yet — it's synthesized from manifest fields, not a
-  stored slide — regenerate the whole deck to change it.
+  revisable this way yet; it's synthesized from manifest fields, not a
+  stored slide, so regenerate the whole deck to change it.
 
 ## What's not built yet
 
 Carried over from HANDOFF.md's original list, still open:
 
-- **Pre-PMF Lean Canvas exit route (§1.1)** — not built; still an open
+- **Pre-PMF Lean Canvas exit route (§1.1)**: not built; still an open
   question per HANDOFF.md.
-- **Multi-build history** — one localStorage slot, no way to save/switch
+- **Multi-build history**: one localStorage slot, no way to save/switch
   between multiple companies yet.
-- **Generation speed** — drafting and auditing are both single large
+- **Generation speed**: drafting and auditing are both single large
   synchronous calls; see the note below.
 - Revisions that flag `target-changed` / `framework-routing-changed` /
   `assumption-changed` say so in the chat log and clear that section's stale
-  findings, but don't automatically re-run a full audit — you re-run it
+  findings, but don't automatically re-run a full audit; you re-run it
   yourself from the Audit & Ship drawer.
 
 ## A note on generation time and length
 
 Drafting a full plan is one large structured-JSON response covering 9
-sections (Interview mode) with inline evidence tags — expect it to take
-somewhere in the 30–90 second range, sometimes longer. If it fails with
+sections (Interview mode) with inline evidence tags; expect it to take
+somewhere in the 30-90 second range, sometimes longer. If it fails with
 "Unterminated JSON in model reply," the model hit its output budget before
 finishing; `src/app/api/draft/route.ts` sets `maxTokens: 30000`, which should
 cover it, but if you see this again, that's the first thing to raise.
@@ -138,7 +138,7 @@ src/
     deckTemplate.ts                   renders a DeckManifest to the standalone HTML file
     deckPrompt.ts                     shape vocabulary + voice, shared by deck and deck-revise
 public/ds/                            copied design-system bundle + CSS
-public/decks/<slug>.html              generated slide decks — the shippable artifact
+public/decks/<slug>.html              generated slide decks, the shippable artifact
 _ds/                                  original design-system source (reference)
 uploads/Revenue_Plan_OS.md            doctrine, spec of record
 Revenue Plan OS.dc.html               original static mockup (reference)

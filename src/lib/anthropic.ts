@@ -19,7 +19,7 @@ export const MODEL = process.env.ANTHROPIC_MODEL || "claude-sonnet-5";
 /**
  * Sends a single-turn request and returns the raw text of the reply.
  * Callers that need structured output ask for JSON in the prompt and parse
- * it with extractJson() below — the SDK's typed tool-use path is more setup
+ * it with extractJson() below; the SDK's typed tool-use path is more setup
  * than this MVP needs.
  *
  * Uses the streaming client rather than a plain create() call: the SDK
@@ -36,7 +36,7 @@ export async function complete(params: {
   const stream = anthropic.messages.stream({
     model: MODEL,
     max_tokens: params.maxTokens ?? 4096,
-    // Without this, claude-sonnet-5 defaults to "adaptive" thinking — it can
+    // Without this, claude-sonnet-5 defaults to "adaptive" thinking; it can
     // spend the entire max_tokens budget on an invisible thinking block and
     // return zero text (observed: 8000/8000 tokens as thinking, no text at
     // all). We want plain structured-JSON output, not visible reasoning.
@@ -58,7 +58,7 @@ export async function complete(params: {
     );
   }
   if (msg.stop_reason === "max_tokens") {
-    console.error("Model hit max_tokens before finishing — reply is truncated.");
+    console.error("Model hit max_tokens before finishing; reply is truncated.");
   }
   return block.text;
 }

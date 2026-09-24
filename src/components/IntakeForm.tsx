@@ -8,7 +8,7 @@ const FIELD_META: { key: keyof IntakeBlock; label: string; required?: boolean; p
   { key: "role", label: "Role / Seat", required: true, placeholder: "title being filled or advised" },
   { key: "segmentFocus", label: "Segment Focus", required: true, placeholder: "SMB / Mid-Market / Enterprise / Strategic" },
   { key: "motion", label: "Motion", required: true, placeholder: "New logo / Expansion / Both" },
-  { key: "target", label: "Target", required: true, placeholder: "quota, growth %, ARR — or “unknown”" },
+  { key: "target", label: "Target", required: true, placeholder: "quota, growth %, ARR, or “unknown”" },
   { key: "targetProvenance", label: "Target Provenance", placeholder: "top-down / bottom-up / unknown" },
   { key: "geo", label: "Geo" },
   { key: "pricingModel", label: "Pricing Model", placeholder: "ARR / usage / consumption / platform / hybrid" },
@@ -98,7 +98,7 @@ export function IntakeForm({
         {submitting ? "Reading intake…" : "Start Scoping"}
       </button>
       <div style={{ fontSize: 10.5, color: "var(--db-muted, #888)", marginTop: 8 }}>
-        * required per §2.1. &quot;Target&quot; may be answered &quot;unknown&quot; — that is a valid answer.
+        * required per §2.1. &quot;Target&quot; may be answered &quot;unknown&quot;; that is a valid answer.
       </div>
     </div>
   );

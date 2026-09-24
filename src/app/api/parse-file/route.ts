@@ -19,7 +19,7 @@ export async function POST(req: Request) {
       const parser = new PDFParse({ data: buffer });
       const result = await parser.getText();
       await parser.destroy();
-      // Strip pdf-parse's "-- N of M --" page-break markers — noise for an
+      // Strip pdf-parse's "-- N of M --" page-break markers: noise for an
       // LLM prompt, not a claim worth preserving.
       const text = result.text.replace(/^-- \d+ of \d+ --$/gm, "").replace(/\n{3,}/g, "\n\n").trim();
       return NextResponse.json({ text });
@@ -31,7 +31,7 @@ export async function POST(req: Request) {
     // Legacy .doc (pre-2007 binary format) isn't supported by mammoth, which
     // only reads the OOXML .docx format.
     return NextResponse.json(
-      { error: `.${ext} isn't parsed by this build — only .pdf and .docx go through the server parser.` },
+      { error: `.${ext} isn't parsed by this build; only .pdf and .docx go through the server parser.` },
       { status: 415 }
     );
   } catch (err) {

@@ -20,7 +20,7 @@ interface AuditResponse {
 
 /**
  * The KPI table and Week One / Assumptions Register sections carry their
- * real content in plan.kpiRows / plan.weekOneItems, not bodyMarkup — that's
+ * real content in plan.kpiRows / plan.weekOneItems, not bodyMarkup; that's
  * a rendering convention (PlanView.tsx renders them as a DataTable/RulesList
  * instead of prose), not a content gap. Handing the model an empty
  * bodyMarkup for them reads as a drafting failure, so synthesize the actual
@@ -31,7 +31,7 @@ function sectionForAudit(s: PlanSection, plan: RevenuePlan): PlanSection {
     return {
       ...s,
       bodyMarkup: plan.kpiRows
-        .map((r) => `${r.metric} — target: ${r.target}; risk signal: ${r.riskSignal}; mitigation: ${r.mitigation}`)
+        .map((r) => `${r.metric}, target: ${r.target}; risk signal: ${r.riskSignal}; mitigation: ${r.mitigation}`)
         .join("\n\n"),
     };
   }
@@ -57,19 +57,19 @@ ${SCOPE_OVERRIDE}
 ---
 
 You are running the §7 Audit Pass on an already-drafted plan. This is a
-separate cognitive task from drafting — you are reviewing, not writing.
+separate cognitive task from drafting; you are reviewing, not writing.
 Auditing and drafting are different jobs; do not rewrite anything, only
 report on it.
 
 Check across all seven §7 categories: Logic integrity, Internal consistency,
 Evidence integrity, Framework fidelity, Structural assessment, Credibility
-risk, Audience fit. Report only genuine issues — do not manufacture findings
+risk, Audience fit. Report only genuine issues; do not manufacture findings
 to pad the list or to cover every category if a category is clean. A clean
 plan can legitimately have zero or few findings.
 
 The KPI & Risk and Week One / Assumptions Register sections' bodyMarkup below
 has been synthesized from their real structured data (rows and list items)
-into reviewable prose for you — that's a rendering convention, not a content
+into reviewable prose for you; that's a rendering convention, not a content
 gap, so don't flag "empty section" for them; audit their actual content
 (row completeness, evidence tiers, orphaned asks) like any other section.
 
@@ -79,7 +79,7 @@ a plan-wide issue that isn't about one section (e.g. a Phase 1 target that
 contradicts a Phase 3 one). sectionLabel is a short human-readable label
 regardless (e.g. "§3 Phase 1" or "Plan-wide").
 
-Severity is critical / moderate / minor, per §7's own definition — critical
+Severity is critical / moderate / minor, per §7's own definition. Critical
 means the plan is not shippable with this open (a fabricated number, a
 routed framework generating a substitute, a target that contradicts stated
 capacity); moderate means it would draw a real challenge from a sharp CRO

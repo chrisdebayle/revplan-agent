@@ -25,10 +25,10 @@ Apply §2.2 exactly:
   answers clearly.
 - Rank by the §2.2 priority order: 1) Target (provenance if known, existence/owner
   if unknown) 2) Audience (single hiring manager vs panel/board) 3) Pricing model
-  4) Data availability — Client/Internal modes only, never ask this for Interview
-  mode per §3 rule 4 5) Competitive set.
+  4) Data availability (Client/Internal modes only, never ask this for Interview
+  mode per §3 rule 4) 5) Competitive set.
 - Assessments (segment/motion mismatch, unrealistic targets) are NOT probe
-  questions — they belong in the audit pass. Do not ask them here.
+  questions; they belong in the audit pass. Do not ask them here.
 - If nothing meets the bar, cleared is true and questions is empty.
 
 Respond with ONLY this JSON shape, no prose, no markdown fence:

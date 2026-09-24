@@ -29,7 +29,7 @@ export function FrameworksDrawer({ open }: { open: boolean }) {
       <div style={{ fontFamily: "var(--db-font-display, inherit)", fontWeight: 700, fontSize: 15, color: "var(--db-dark, #111)", marginBottom: 4 }}>
         Frameworks in play
       </div>
-      <div style={{ fontSize: 12, color: "var(--db-muted, #888)", marginBottom: 18 }}>Section 4.1 — routed, not substituted.</div>
+      <div style={{ fontSize: 12, color: "var(--db-muted, #888)", marginBottom: 18 }}>Section 4.1: routed, not substituted.</div>
       {FRAMEWORKS.map((fw) => (
         <div key={fw.name} style={{ padding: 12, marginBottom: 8, borderRadius: 8, border: "1px solid var(--db-line, #ddd)" }}>
           <div style={{ fontFamily: "var(--db-font-display, inherit)", fontWeight: 600, fontSize: 13, color: "var(--db-dark, #111)", marginBottom: 4 }}>{fw.name}</div>
@@ -58,7 +58,7 @@ export function ContextDrawer({ open, summary }: { open: boolean; summary: Conte
       <div style={{ fontFamily: "var(--db-font-display, inherit)", fontWeight: 700, fontSize: 15, color: "var(--db-dark, #111)", marginBottom: 4 }}>
         Context Summary
       </div>
-      <div style={{ fontSize: 12, color: "var(--db-muted, #888)", marginBottom: 18 }}>§10 — ships with every deliverable, verbatim.</div>
+      <div style={{ fontSize: 12, color: "var(--db-muted, #888)", marginBottom: 18 }}>§10: ships with every deliverable, verbatim.</div>
       {!summary ? (
         <div style={{ fontSize: 12.5, color: "var(--db-muted, #888)" }}>Populates once scoping starts.</div>
       ) : (
@@ -68,7 +68,7 @@ export function ContextDrawer({ open, summary }: { open: boolean; summary: Conte
               {f.label}
             </div>
             <div style={{ fontFamily: "ui-monospace, Menlo, monospace", fontSize: 12, lineHeight: 1.6, color: "var(--db-ink-soft, #444)", whiteSpace: "pre-wrap" }}>
-              {summary[f.key] || "—"}
+              {summary[f.key] || "(none)"}
             </div>
           </div>
         ))

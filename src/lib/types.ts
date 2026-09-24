@@ -141,7 +141,7 @@ export interface ShipGateCheck {
 // --- Deck (final shippable artifact) -----------------------------------
 // A fixed vocabulary of slide "shapes" borrowed from deck-example-tradeform.html.
 // The deck is a translation layer: plain business language, no evidence-tag
-// syntax, no doctrine section numbers — the plan is the source of truth, the
+// syntax, no doctrine section numbers; the plan is the source of truth, the
 // deck is what a business leader actually reads.
 
 export interface DeckCard {

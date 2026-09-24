@@ -7,7 +7,7 @@ function isStructuralSection(section: PlanSection): boolean {
 
 /**
  * §9 Ship Gate, computed deterministically rather than asked of the model a
- * second time — two of the six rows (audit clean, evidence tiered) read off
+ * second time: two of the six rows (audit clean, evidence tiered) read off
  * the audit findings, the rest are checked directly against the plan.
  */
 export function computeShipGate(params: {
@@ -29,7 +29,7 @@ export function computeShipGate(params: {
       key: "evidence-tiered",
       label: "Evidence tiered",
       passed: false,
-      detail: "Audit hasn't been run yet — evidence integrity is checked there.",
+      detail: "Audit hasn't been run yet; evidence integrity is checked there.",
     });
   } else {
     const openCritical = findings.filter((f) => f.severity === "critical" && f.status !== "resolved");
@@ -77,8 +77,8 @@ export function computeShipGate(params: {
       ? plan.wordCount <= plan.wordCeiling
         ? `${plan.wordCount} / ${plan.wordCeiling} words.`
         : ceilingAccepted
-          ? `${plan.wordCount} / ${plan.wordCeiling} words — over ceiling, accepted.`
-          : `${plan.wordCount} / ${plan.wordCeiling} words — over ceiling, not yet accepted.`
+          ? `${plan.wordCount} / ${plan.wordCeiling} words, over ceiling, accepted.`
+          : `${plan.wordCount} / ${plan.wordCeiling} words, over ceiling, not yet accepted.`
       : "No fixed ceiling for this mode.",
   });
 

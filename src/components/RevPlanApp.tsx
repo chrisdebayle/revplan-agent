@@ -150,12 +150,12 @@ export function RevPlanApp() {
       const data = await res.json();
       if (data.error) throw new Error(data.error);
       if (data.cleared || !data.questions?.length) {
-        pushMessage({ kind: "agent-text", text: "Required fields are clear enough to draft — no probe needed, per §2.2." });
+        pushMessage({ kind: "agent-text", text: "Required fields are clear enough to draft; no probe needed, per §2.2." });
         patch({ phase: "ready" });
       } else {
         pushMessage({
           kind: "agent-text",
-          text: `${data.questions.length} field${data.questions.length > 1 ? "s are" : " is"} ambiguous enough to change the plan — probing ${data.questions.length > 1 ? "those" : "it"} before I draft, per §2.2.`,
+          text: `${data.questions.length} field${data.questions.length > 1 ? "s are" : " is"} ambiguous enough to change the plan; probing ${data.questions.length > 1 ? "those" : "it"} before I draft, per §2.2.`,
         });
         patch({ probeQuestions: data.questions, phase: "probing" });
       }
@@ -180,7 +180,7 @@ export function RevPlanApp() {
   function handleBuildAnyway() {
     const unanswered = probeQuestions.map((q) => `${q.question} (bypassed)`);
     const missingRequired = REQUIRED_INTAKE_FIELDS.filter((f) => !intake[f]?.trim()).map((f) => `${f} (required field left blank)`);
-    pushMessage({ kind: "agent-text", text: "Proceeding without those answers — logged as open assumptions in the Context Summary, per §2.2." });
+    pushMessage({ kind: "agent-text", text: "Proceeding without those answers; logged as open assumptions in the Context Summary, per §2.2." });
     patch({ bypassedNotes: [...unanswered, ...missingRequired], phase: "ready" });
   }
 
@@ -206,7 +206,7 @@ export function RevPlanApp() {
       }));
 
       const newPlan: RevenuePlan = {
-        companyTitle: `Revenue Plan — ${intake.company}`,
+        companyTitle: `Revenue Plan: ${intake.company}`,
         execSummaryMarkup: data.execSummaryMarkup,
         sections,
         kpiRows: data.kpiRows || [],
@@ -229,7 +229,7 @@ export function RevPlanApp() {
       });
       pushMessage({
         kind: "agent-text",
-        text: `Draft ready — v1, ${newPlan.wordCount} words. Run Audit (§7) from the header before treating this as more than a first draft — nothing's ship-clean until §9 clears.`,
+        text: `Draft ready: v1, ${newPlan.wordCount} words. Run Audit (§7) from the header before treating this as more than a first draft; nothing's ship-clean until §9 clears.`,
       });
     } catch (e) {
       setError(e instanceof Error ? e.message : "Draft generation failed.");
@@ -241,7 +241,7 @@ export function RevPlanApp() {
 
   function handleReviseClick(sectionId: string) {
     setReviseTarget(sectionId);
-    setComposerText(`Revise ${sectionTitleFor(plan, sectionId)} — `);
+    setComposerText(`Revise ${sectionTitleFor(plan, sectionId)}: `);
     composerRef.current?.focus();
   }
 
@@ -291,7 +291,7 @@ export function RevPlanApp() {
 
       const flagNote = data.flags?.length ? ` This also changes ${data.flags.join(", ")}.` : "";
       const staleNote = staleCount
-        ? ` Cleared ${staleCount} audit finding${staleCount > 1 ? "s" : ""} for this section — re-run Audit before shipping (§13).`
+        ? ` Cleared ${staleCount} audit finding${staleCount > 1 ? "s" : ""} for this section; re-run Audit before shipping (§13).`
         : "";
       pushMessage({ kind: "agent-text", text: `${data.note || "Scoped edit applied."}${flagNote}${staleNote}` });
     } catch (e) {
@@ -320,7 +320,7 @@ export function RevPlanApp() {
         kind: "agent-text",
         text:
           data.findings.length === 0
-            ? "Audit ran clean — no findings."
+            ? "Audit ran clean: no findings."
             : `Audit found ${data.findings.length} issue${data.findings.length > 1 ? "s" : ""} (${critical} critical, ${moderate} moderate). See Audit & Ship in the header.`,
       });
     } catch (e) {
@@ -357,7 +357,7 @@ export function RevPlanApp() {
       const data = await res.json();
       if (data.error) throw new Error(data.error);
       patch({ deckManifest: data.manifest as DeckManifest });
-      pushMessage({ kind: "agent-text", text: `Deck generated — public${data.path}. Switch to the Deck view to preview and revise it.` });
+      pushMessage({ kind: "agent-text", text: `Deck generated: public${data.path}. Switch to the Deck view to preview and revise it.` });
     } catch (e) {
       setError(e instanceof Error ? e.message : "Deck generation failed.");
     } finally {
@@ -397,7 +397,7 @@ export function RevPlanApp() {
       setDeckComposerText("");
       setDeckReviseTarget(null);
       // The iframe reload (triggered by the new generatedAt in its src) will
-      // re-broadcast the active slide once it repaints at the same index —
+      // re-broadcast the active slide once it repaints at the same index;
       // pre-seed it now too so the sidebar label doesn't flicker to blank.
       setActiveSlide((s) => (s ? { ...s, globalIndex: targetGlobalIndex } : s));
     } catch (e) {
@@ -458,10 +458,10 @@ export function RevPlanApp() {
       kind: "agent-text",
       text:
         parsedCount > 0
-          ? `${parsedCount} file${parsedCount > 1 ? "s" : ""} parsed. Tiering happens at draft time — attachment text is context, not automatically Sourced.${
-              files.length > parsedCount ? " Legacy .doc isn't parsed — only .docx (Word's XML format)." : ""
+          ? `${parsedCount} file${parsedCount > 1 ? "s" : ""} parsed. Tiering happens at draft time; attachment text is context, not automatically Sourced.${
+              files.length > parsedCount ? " Legacy .doc isn't parsed; only .docx (Word's XML format)." : ""
             }`
-          : "Attached, but couldn't extract text — only .md/.markdown/.txt/.srt/.vtt, .pdf, and .docx are supported.",
+          : "Attached, but couldn't extract text; only .md/.markdown/.txt/.srt/.vtt, .pdf, and .docx are supported.",
     });
     setState((s) => ({ ...s, attachments: [...s.attachments, ...files] }));
   }
@@ -490,21 +490,21 @@ export function RevPlanApp() {
     phase === "intake" && messages.length <= 1
       ? null
       : {
-          build: `${intake.company || "(unnamed)"} · ${intake.mode} · ${new Date().toISOString().slice(0, 10)} · v${plan?.version ?? "—"}`,
+          build: `${intake.company || "(unnamed)"} · ${intake.mode} · ${new Date().toISOString().slice(0, 10)} · v${plan?.version ?? "n/a"}`,
           intake: formatIntakeVerbatim(intake),
           probeAnswers: formatProbeAnswersVerbatim(probeAnswers),
-          frameworksUsed: draftContext?.frameworksUsed.join(", ") || "—",
-          unownedAreas: draftContext?.unownedAreas.join("\n") || "—",
-          scopingDecisions: draftContext?.scopingDecisions.join("\n") || "—",
+          frameworksUsed: draftContext?.frameworksUsed.join(", ") || "(none)",
+          unownedAreas: draftContext?.unownedAreas.join("\n") || "(none)",
+          scopingDecisions: draftContext?.scopingDecisions.join("\n") || "(none)",
           unresolved:
             [
               ...bypassedNotes,
               ...(plan ? extractRequiresData(plan) : []),
               ...(auditFindings || [])
                 .filter((f) => f.status === "open" && f.severity !== "minor")
-                .map((f) => `${f.severity} — ${f.sectionLabel}: ${f.description}`),
-            ].join("\n") || "—",
-          sectionsAdded: "—",
+                .map((f) => `${f.severity}, ${f.sectionLabel}: ${f.description}`),
+            ].join("\n") || "(none)",
+          sectionsAdded: "(none)",
           sectionsCut: draftContext?.sectionsCut.join(", ") || "None",
         };
 
@@ -618,7 +618,7 @@ export function RevPlanApp() {
             />
             <button
               onClick={() => fileInputRef.current?.click()}
-              title="Attach reference material — Markdown, PDF, call transcripts"
+              title="Attach reference material: Markdown, PDF, call transcripts"
               style={{
                 flex: "none",
                 width: 34,

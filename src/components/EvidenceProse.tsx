@@ -15,7 +15,7 @@ function Token({ token }: { token: EvidenceToken }) {
   if (token.kind === "bold") return <b>{token.value}</b>;
   return (
     <sup
-      title={`${TIER_LABEL[token.tier]}${token.detail ? ` — ${token.detail}` : ""}`}
+      title={`${TIER_LABEL[token.tier]}${token.detail ? `: ${token.detail}` : ""}`}
       style={{ color: TIER_COLOR[token.tier], fontWeight: 700, cursor: "help", marginLeft: 1 }}
     >
       {token.tier}

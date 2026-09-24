@@ -15,7 +15,7 @@ function esc(s: string): string {
     .replace(/'/g, "&#39;");
 }
 
-// slideIdx is -1 for the cover (not addressable by the revise flow — it's
+// slideIdx is -1 for the cover (not addressable by the revise flow; it's
 // synthesized from manifest fields, not a stored DeckChapter slide) and the
 // slide's own index within its chapter's slides[] array otherwise. Combined
 // with chapterIndex, this is how the in-app editable preview tells the

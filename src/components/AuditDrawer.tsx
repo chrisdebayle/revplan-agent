@@ -138,7 +138,7 @@ export function AuditDrawer({
       <div style={{ fontFamily: "var(--db-font-display, inherit)", fontWeight: 700, fontSize: 15, color: "var(--db-dark, #111)", marginBottom: 4 }}>
         Audit &amp; Ship Gate
       </div>
-      <div style={{ fontSize: 12, color: "var(--db-muted, #888)", marginBottom: 16 }}>§7 audit, run as its own pass — §9 gates delivery.</div>
+      <div style={{ fontSize: 12, color: "var(--db-muted, #888)", marginBottom: 16 }}>§7 audit, run as its own pass; §9 gates delivery.</div>
 
       {!plan ? (
         <div style={{ fontSize: 12.5, color: "var(--db-muted, #888)" }}>Draft a plan first.</div>
@@ -166,7 +166,7 @@ export function AuditDrawer({
           </button>
 
           {findings && findings.length === 0 && (
-            <div style={{ fontSize: 12.5, color: "var(--db-ink-soft, #444)", marginBottom: 16 }}>No findings — clean read.</div>
+            <div style={{ fontSize: 12.5, color: "var(--db-ink-soft, #444)", marginBottom: 16 }}>No findings: clean read.</div>
           )}
 
           {findings && findings.length > 0 && (

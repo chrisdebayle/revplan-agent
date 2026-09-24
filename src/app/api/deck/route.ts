@@ -15,44 +15,44 @@ interface DeckLLMResponse {
 }
 
 const FULL_DECK_SHAPE_RULES = `${SHAPE_VOCAB}
-Do not produce a "cover" slide — that's generated separately from the plan's own title.
+Do not produce a "cover" slide; that's generated separately from the plan's own title.
 Every chapter opens with exactly one "divider" slide, chapterNumber is "01","02",... in order,
 followed by 1-3 content slides. Thin content gets one slide; do not pad rich content past three.
 The very last chapter ends with one "closing" slide after its content slides.`;
 
-const INTERNAL_DECK_STRUCTURE = `This is an Internal Operating Plan (§6.2) — an ongoing document for a role
+const INTERNAL_DECK_STRUCTURE = `This is an Internal Operating Plan (§6.2), an ongoing document for a role
 already secured, revisited and iterated as the plan runs, not a one-time
 interview pitch. Produce chapters in this order:
-1. "The Baseline" — from Baseline and Variance Read. Use "stats" for the
+1. "The Baseline": from Baseline and Variance Read. Use "stats" for the
    actuals-vs-target numbers if there are enough of them, else "cards".
-2. "Capacity & Coverage" — from Capacity and Coverage Model. This is a
-   constructed (§4.2) area, not a routed framework — say so in plain
+2. "Capacity & Coverage": from Capacity and Coverage Model. This is a
+   constructed (§4.2) area, not a routed framework; say so in plain
    language in a card or note ("built for this plan, not drawn from an
    external model"), never claim it as validated methodology.
-3. "The Quarters" — from Quarterly Initiative Sequence. If quarters have
+3. "The Quarters": from Quarterly Initiative Sequence. If quarters have
    explicit gate criteria to advance, render them as one "gaterow" (each
    quarter is a gate); otherwise use "cards" or "list", one entry per
    quarter, stating what must be true to proceed.
-4. "KPI & Risk" — from the KPI table, as a "stats" slide (value = target,
+4. "KPI & Risk": from the KPI table, as a "stats" slide (value = target,
    detail = risk signal + mitigation folded into one line).
-5. "Assumptions & Open Asks" — from the Assumptions Register (weekOneItems).
+5. "Assumptions & Open Asks": from the Assumptions Register (weekOneItems).
    Use "list". This is the single place open questions and Requires-Data
-   items live — do not scatter them elsewhere.
+   items live; do not scatter them elsewhere.
 A quote slide pulling from the gap-probe answers (the reader's own words) is
 a strong opener for "The Baseline" chapter if a probe answer reads well as a
-quote — use it there, skip it if nothing fits naturally.`;
+quote; use it there, skip it if nothing fits naturally.`;
 
-const INTERVIEW_DECK_STRUCTURE = `This is an Interview / New-in-Seat plan — a pitch for a hiring panel.
+const INTERVIEW_DECK_STRUCTURE = `This is an Interview / New-in-Seat plan, a pitch for a hiring panel.
 Produce chapters in this order:
-1. "The Read" — from the Outside-In Diagnostic. A quote slide from the
+1. "The Read": from the Outside-In Diagnostic. A quote slide from the
    gap-probe answers (the reader's own words) works well here if one fits.
-2. "Days 1-90" — from Phase 1.
-3. "Months 4-6" — from Phase 2.
-4. "Months 7-12" — from Phase 3.
-5. "What Gets Measured" — from the KPI table, as a "stats" slide.
-6. "Competitive Positioning" — only if that section exists in the plan (it's
-   optional) — skip this chapter entirely if it doesn't.
-7. "Week One" — from the Week One asks. Use "list". This is the single
+2. "Days 1-90": from Phase 1.
+3. "Months 4-6": from Phase 2.
+4. "Months 7-12": from Phase 3.
+5. "What Gets Measured": from the KPI table, as a "stats" slide.
+6. "Competitive Positioning": only if that section exists in the plan (it's
+   optional); skip this chapter entirely if it doesn't.
+7. "Week One": from the Week One asks. Use "list". This is the single
    place open questions and Requires-Data items live.
 Any section whose content is naturally a five-stage sequence with named
 owners (e.g. VALID's five wins where they carry real weight in this plan)
@@ -91,7 +91,7 @@ Respond with ONLY this JSON shape, no prose, no markdown fence:
 
 Gap probe answers:\n${JSON.stringify(probeAnswers, null, 2)}
 
-Ship Gate status: ${shipClean ? "clean" : "NOT yet clean — note in a small aside that this deck reflects a plan still in progress, only if it fits naturally; do not force it onto a slide that has no room for it"}
+Ship Gate status: ${shipClean ? "clean" : "NOT yet clean; note in a small aside that this deck reflects a plan still in progress, only if it fits naturally; do not force it onto a slide that has no room for it"}
 
 Audited plan:\n${JSON.stringify(
     {
@@ -110,9 +110,9 @@ Audited plan:\n${JSON.stringify(
 
     const slug = slugify(intake.company);
     const manifest = {
-      companyTitle: `Revenue Plan — ${intake.company}`,
+      companyTitle: `Revenue Plan: ${intake.company}`,
       eyebrow: parsed.eyebrow,
-      // Computed directly rather than left to the model — it's known data,
+      // Computed directly rather than left to the model: it's known data,
       // and asking the model to format "who + role + company" reliably
       // produced wrong orderings and dropped names in testing.
       preparedBy: `Prepared by Chris Debayle · ${intake.role || "Seat holder"}, ${intake.company}`,

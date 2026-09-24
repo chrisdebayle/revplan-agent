@@ -26,7 +26,7 @@ export async function POST(req: Request) {
 
   const chapter = manifest.chapters[chapterIndex];
   if (!chapter || !chapter.slides[slideIndex]) {
-    return NextResponse.json({ error: "That slide no longer exists — the deck may have changed. Regenerate and try again." }, { status: 400 });
+    return NextResponse.json({ error: "That slide no longer exists; the deck may have changed. Regenerate and try again." }, { status: 400 });
   }
   const targetSlide = chapter.slides[slideIndex];
 
@@ -39,14 +39,14 @@ ${SCOPE_OVERRIDE}
 ${DECK_VOICE}
 
 You are revising ONE slide in an already-generated deck, per a scoped
-instruction — this is a content edit, not a restructure. Do not add,
+instruction: this is a content edit, not a restructure. Do not add,
 remove, or reorder slides or chapters; do not move this slide to a
 different chapter. You may change the slide's "kind" if the instruction
 calls for a different visual treatment (e.g. turning a cards slide into a
 stats slide), but the result must still be exactly one slide object from
 the shape vocabulary below, and it must still belong where it is.
 
-Ground any new content in the plan provided below — do not invent a claim
+Ground any new content in the plan provided below; do not invent a claim
 the plan doesn't support. Stay consistent with the other slides in this
 chapter (shown for context, not to be modified).
 
@@ -58,7 +58,7 @@ Respond with ONLY this JSON shape, no prose, no markdown fence:
 
   const user = `Intake block:\n${JSON.stringify(intake, null, 2)}
 
-Plan (source of truth — ground the revision in this):\n${JSON.stringify(
+Plan (source of truth, ground the revision in this):\n${JSON.stringify(
     {
       execSummaryMarkup: plan.execSummaryMarkup,
       sections: plan.sections,
@@ -69,7 +69,7 @@ Plan (source of truth — ground the revision in this):\n${JSON.stringify(
     2
   )}
 
-Chapter "${chapter.title}" — all its slides, for consistency (only slide index ${slideIndex} is in scope to change):\n${JSON.stringify(chapter.slides, null, 2)}
+Chapter "${chapter.title}", all its slides, for consistency (only slide index ${slideIndex} is in scope to change):\n${JSON.stringify(chapter.slides, null, 2)}
 
 Slide to revise:\n${JSON.stringify(targetSlide, null, 2)}
 

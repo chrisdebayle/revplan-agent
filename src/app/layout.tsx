@@ -12,7 +12,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en">
       <head>
-        {/* Prebuilt design-system stylesheet served from /public — not a
+        {/* Prebuilt design-system stylesheet served from /public, not a
             webpack-bundled asset, so next/font-style handling doesn't apply. */}
         {/* eslint-disable-next-line @next/next/no-css-tags */}
         <link rel="stylesheet" href="/ds/styles.css" />

@@ -71,7 +71,7 @@ export function DeckView({
           <>
             {!shipClean && (
               <div style={{ fontSize: 12, color: "var(--db-accent-800, #92400e)", background: "var(--db-tint-warm, #fef3e2)", borderRadius: 8, padding: "8px 10px" }}>
-                Ship Gate isn&rsquo;t clean yet — this deck reflects a plan in progress.
+                Ship Gate isn&rsquo;t clean yet; this deck reflects a plan in progress.
               </div>
             )}
 
@@ -111,14 +111,14 @@ export function DeckView({
                     Currently viewing
                   </div>
                   <div style={{ fontSize: 13, color: "var(--db-dark, #111)", marginBottom: 4 }}>
-                    {activeSlide ? `Slide ${activeSlide.globalIndex + 1} of ${activeSlide.total}` : "—"}
+                    {activeSlide ? `Slide ${activeSlide.globalIndex + 1} of ${activeSlide.total}` : "(none)"}
                   </div>
                   <div style={{ fontSize: 12, color: "var(--db-ink-soft, #444)", marginBottom: 14 }}>{slideLabel(manifest, activeSlide)}</div>
 
                   <button
                     onClick={onReviseClick}
                     disabled={!canReviseActive}
-                    title={canReviseActive ? "Scope an edit to this slide" : "The cover isn't editable here yet — use Regenerate Deck"}
+                    title={canReviseActive ? "Scope an edit to this slide" : "The cover isn't editable here yet; use Regenerate Deck"}
                     style={{
                       alignSelf: "flex-start",
                       fontSize: 12,

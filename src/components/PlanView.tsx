@@ -31,7 +31,7 @@ const constructedBadge = (
       fontWeight: 600,
     }}
   >
-    Constructed — §4.2, no owned framework
+    Constructed: §4.2, no owned framework
   </div>
 );
 
@@ -158,13 +158,13 @@ export function PlanView({
         </div>
         <div style={{ fontSize: 12.5, color: overCeiling ? "var(--db-fail, #dc2626)" : "var(--db-muted, #888)", marginTop: 6 }}>
           Draft v{plan.version} · {plan.wordCount} / {Number.isFinite(plan.wordCeiling) ? plan.wordCeiling : "no ceiling"} words
-          {overCeiling ? " — over ceiling, see §1 cut order" : ""}
+          {overCeiling ? ", over ceiling, see §1 cut order" : ""}
         </div>
         <div style={{ fontSize: 11.5, color: "var(--db-muted, #888)", marginTop: 10 }}>
           Evidence: <sup style={{ color: "var(--db-primary, #2f5eff)", fontWeight: 700 }}>S</sup> Sourced ·{" "}
           <sup style={{ color: "var(--db-accent-700, #b45309)", fontWeight: 700 }}>D</sup> Derived ·{" "}
           <sup style={{ color: "var(--db-accent-800, #92400e)", fontWeight: 700 }}>A</sup> Assumed ·{" "}
-          <sup style={{ color: "var(--db-fail, #dc2626)", fontWeight: 700 }}>RD</sup> Requires Data — hover any tag for detail.
+          <sup style={{ color: "var(--db-fail, #dc2626)", fontWeight: 700 }}>RD</sup> Requires Data. Hover any tag for detail.
         </div>
       </div>
 
@@ -199,7 +199,7 @@ export function PlanView({
 
       {reviseTarget && (
         <div style={{ fontSize: 11, color: "var(--db-primary, #2f5eff)", textAlign: "center", padding: "8px 0" }}>
-          Revising — finish your instruction in the composer and send.
+          Revising: finish your instruction in the composer and send.
         </div>
       )}
     </div>

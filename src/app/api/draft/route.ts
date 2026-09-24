@@ -19,25 +19,25 @@ interface DraftResponse {
 const INTERVIEW_STRUCTURE = `Produce exactly these sections, numbers "01"-"09", per §5 (Interview / New-in-Seat):
 01 Executive Summary (label "EXECUTIVE SUMMARY", <=200 words, goes in execSummaryMarkup not sections[])
 02 Outside-In Diagnostic
-03 Phase 1 — Days 1-90: Reactivate + Found
-04 Phase 2 — Months 4-6: Convert
-05 Phase 3 — Months 7-12: Systemize
-06 KPI & Risk (goes in kpiRows, not sections[] body — still include a short section with number "06" and label "KPI & RISK" whose bodyMarkup is empty string, frameworksLinked citing Disposition Science for Meeting+Activated rate)
-07 Competitive Positioning — OPTIONAL, include only if the competitive set is known from intake/probe; mark constructed:true (§4.2, Execution Value Thesis retired — build this section's positioning logic openly instead, still labeled constructed since Execution Value Thesis itself is out of scope for this personal build)
-08 Strategic Leverage Plays — OPTIONAL, 2-3 plays max; mark constructed:true
-09 What I'd Need in Week One (goes in weekOneItems, not sections[] body — still include a stub section "09" with empty bodyMarkup)
+03 Phase 1, Days 1-90: Reactivate + Found
+04 Phase 2, Months 4-6: Convert
+05 Phase 3, Months 7-12: Systemize
+06 KPI & Risk (goes in kpiRows, not sections[] body; still include a short section with number "06" and label "KPI & RISK" whose bodyMarkup is empty string, frameworksLinked citing Disposition Science for Meeting+Activated rate)
+07 Competitive Positioning, OPTIONAL, include only if the competitive set is known from intake/probe; mark constructed:true (§4.2, Execution Value Thesis retired, build this section's positioning logic openly instead, still labeled constructed since Execution Value Thesis itself is out of scope for this personal build)
+08 Strategic Leverage Plays, OPTIONAL, 2-3 plays max; mark constructed:true
+09 What I'd Need in Week One (goes in weekOneItems, not sections[] body; still include a stub section "09" with empty bodyMarkup)
 Word ceiling: 1,800-2,200 words total across execSummaryMarkup + section bodies (excluding evidence-tag detail text and KPI/week-one items). If over ceiling, cut in this order: §08 -> §07 -> trim §05 to targets only. Never cut §02, §06, §09.`;
 
 const INTERNAL_STRUCTURE = `Produce EXACTLY these six sections per §6.2 (Internal Operating Plan), numbers "01"-"06", and no others:
-01 Executive Summary (<=200 words, board-readable — execSummaryMarkup)
-02 Baseline and Variance Read (Sourced tier throughout — an internal plan carrying Assumed figures in its baseline has a data problem before a strategy problem)
-03 Capacity and Coverage Model (§4.2 unowned area — mark constructed:true, state every assumption)
-04 Quarterly Initiative Sequence (gated — each quarter states what must be true to proceed)
+01 Executive Summary (<=200 words, board-readable, execSummaryMarkup)
+02 Baseline and Variance Read (Sourced tier throughout; an internal plan carrying Assumed figures in its baseline has a data problem before a strategy problem)
+03 Capacity and Coverage Model (§4.2 unowned area; mark constructed:true, state every assumption)
+04 Quarterly Initiative Sequence (gated; each quarter states what must be true to proceed)
 05 KPI and Risk Table (kpiRows)
-06 Assumptions Register (every Assumed and Requires Data item, with owner and test date — weekOneItems)
-No fixed word ceiling, but section discipline still applies — don't pad.
+06 Assumptions Register (every Assumed and Requires Data item, with owner and test date, weekOneItems)
+No fixed word ceiling, but section discipline still applies; don't pad.
 Competitive Positioning and Strategic Leverage Plays are Interview-mode-only
-sections (§5.7/§5.8) — do not add them here under any name.`;
+sections (§5.7/§5.8); do not add them here under any name.`;
 
 export async function POST(req: Request) {
   const { intake, probeAnswers, attachments } = (await req.json()) as {
@@ -54,7 +54,7 @@ ${SCOPE_OVERRIDE}
 
 ---
 
-You are drafting the plan itself. Scoping has already cleared — do not ask
+You are drafting the plan itself. Scoping has already cleared; do not ask
 questions, just build, per §1-§6, §11 style, and §3 evidence standard.
 
 ${structure}
@@ -64,9 +64,9 @@ quantified claim gets an inline tag immediately after it in this exact form:
 {{S|source named inline}} for Sourced, {{D|the math, shown}} for Derived,
 {{A|the range plus the named first test}} for Assumed, {{RD|the named data pull}}
 for Requires Data. No unlabeled figures. Interview mode has no internal data
-(§3 rule 4) — never fabricate a closed/lost analysis, win-rate baseline, or
+(§3 rule 4); never fabricate a closed/lost analysis, win-rate baseline, or
 cycle-time figure; supply the method and the named pull instead, tagged RD.
-Keep every tag's detail to a short fragment, well under 15 words — a citation
+Keep every tag's detail to a short fragment, well under 15 words: a citation
 or a named pull, not a restated sentence. This is JSON-embedded, so verbosity
 here costs real output budget; be as terse as the claim allows without losing
 the citation.
@@ -75,18 +75,19 @@ in each section's frameworksLinked array using their exact names (e.g. "ICP
 Datapoint Framework", "RVP Framework", "VALID Deal Model", "Disposition
 Science"). §4.2 unowned areas (pricing/packaging, capacity/quota modeling,
 pipeline coverage math, compensation design, territory allocation, sales
-stage/exit-criteria definition, and — in Interview mode only, per §5.7/§5.8
-— Competitive Positioning and Strategic Leverage Plays) must set
+stage/exit-criteria definition, and, in Interview mode only, per §5.7/§5.8,
+Competitive Positioning and Strategic Leverage Plays) must set
 constructed:true and must not borrow a routed framework's authority.
 
 Style (§11): sharp, quantified, operator voice. Zero category vocabulary
 (transformation, optimize, unlock, synergy, flywheel, supercharge,
 best-in-class, leverage-as-verb). Recommendation first, reasoning second. No
-em dashes, curly apostrophes only. Tight is a feature, not a shortfall — stay
-inside the word ceiling comfortably rather than writing to fill space.
+em dashes anywhere; use a comma, colon, semicolon, or parentheses instead.
+Curly apostrophes only. Tight is a feature, not a shortfall; stay inside the
+word ceiling comfortably rather than writing to fill space.
 
 Output budget is finite. Do not draft supporting reasoning, an outline, or
-commentary before or after the JSON — those cost tokens the plan itself
+commentary before or after the JSON; those cost tokens the plan itself
 needs. Respond with ONLY this JSON shape, starting immediately with "{" and
 ending with "}", no prose, no markdown fence:
 {
@@ -108,7 +109,7 @@ ending with "}", no prose, no markdown fence:
   const user = `Intake block:\n${JSON.stringify(intake, null, 2)}
 
 Gap probe answers:\n${JSON.stringify(probeAnswers, null, 2)}
-${attachmentContext ? `\nAttached reference material (tier every claim you pull from this — attachment text is not automatically Sourced):\n${attachmentContext}` : ""}`;
+${attachmentContext ? `\nAttached reference material (tier every claim you pull from this; attachment text is not automatically Sourced):\n${attachmentContext}` : ""}`;
 
   try {
     const text = await complete({ system, user, maxTokens: 30000 });

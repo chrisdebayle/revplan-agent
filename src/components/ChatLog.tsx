@@ -82,7 +82,7 @@ export function ChatLog({ messages }: { messages: ChatMessage[] }) {
                       {label}
                     </span>
                     <span style={{ fontSize: 13, color: "var(--db-dark, #111)" }}>
-                      {value || "—"}
+                      {value || "(none)"}
                     </span>
                   </Fragment>
                 ))}
@@ -125,7 +125,7 @@ export function ChatLog({ messages }: { messages: ChatMessage[] }) {
                   </span>
                   <span style={{ fontSize: 12.5, color: "var(--db-dark, #111)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                     {f.name}
-                    {f.unparsed ? " — not parsed yet" : ""}
+                    {f.unparsed ? ", not parsed yet" : ""}
                   </span>
                 </div>
               ))}

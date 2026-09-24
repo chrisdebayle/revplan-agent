@@ -5,7 +5,7 @@ import { createContext, useContext, useEffect, useState } from "react";
 
 // The Chris Debayle Brand Components bundle is a plain browser-global build
 // (window.ChrisDebayleBrandComponents) that calls window.React.createElement
-// internally — see _ds/.../README.md. We load it client-side only, after
+// internally; see _ds/.../README.md. We load it client-side only, after
 // pointing window.React at this app's own React so the DS components mount
 // into the same tree instead of a second React instance.
 type DsNamespace = Record<string, React.ComponentType<Record<string, unknown>>>;
@@ -33,7 +33,7 @@ export function DsProvider({ children }: { children: React.ReactNode }) {
     const src = "/ds/_ds_bundle.js";
     const existing = document.querySelector<HTMLScriptElement>(`script[src="${src}"]`);
     if (existing) {
-      // Dev Strict Mode runs this effect twice — reuse the tag from the
+      // Dev Strict Mode runs this effect twice; reuse the tag from the
       // first pass instead of racing a second load/removal against it.
       existing.addEventListener("load", () => setDs(window.ChrisDebayleBrandComponents ?? null));
       return;
