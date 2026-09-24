@@ -4,7 +4,7 @@ import path from "node:path";
 import { complete, extractJson } from "@/lib/anthropic";
 import { loadDoctrine, SCOPE_OVERRIDE } from "@/lib/doctrine";
 import { renderDeckHtml, slugify } from "@/lib/deckTemplate";
-import { SHAPE_VOCAB, DECK_VOICE } from "@/lib/deckPrompt";
+import { SHAPE_VOCAB, DECK_VOICE, RAIL_CHAPTER } from "@/lib/deckPrompt";
 import type { IntakeBlock, ProbeAnswer, RevenuePlan, DeckChapter } from "@/lib/types";
 
 export const runtime = "nodejs";
@@ -33,9 +33,10 @@ interview pitch. Produce chapters in this order:
    explicit gate criteria to advance, render them as one "gaterow" (each
    quarter is a gate); otherwise use "cards" or "list", one entry per
    quarter, stating what must be true to proceed.
-4. "KPI & Risk": from the KPI table, as a "stats" slide (value = target,
+4. "The Rail": see the separate mandatory-chapter instructions below.
+5. "KPI & Risk": from the KPI table, as a "stats" slide (value = target,
    detail = risk signal + mitigation folded into one line).
-5. "Assumptions & Open Asks": from the Assumptions Register (weekOneItems).
+6. "Assumptions & Open Asks": from the Assumptions Register (weekOneItems).
    Use "list". This is the single place open questions and Requires-Data
    items live; do not scatter them elsewhere.
 A quote slide pulling from the gap-probe answers (the reader's own words) is
@@ -49,14 +50,14 @@ Produce chapters in this order:
 2. "Days 1-90": from Phase 1.
 3. "Months 4-6": from Phase 2.
 4. "Months 7-12": from Phase 3.
-5. "What Gets Measured": from the KPI table, as a "stats" slide.
-6. "Competitive Positioning": only if that section exists in the plan (it's
+5. "The Rail": see the separate mandatory-chapter instructions below.
+6. "What Gets Measured": from the KPI table, as a "stats" slide.
+7. "Competitive Positioning": only if that section exists in the plan (it's
    optional); skip this chapter entirely if it doesn't.
-7. "Week One": from the Week One asks. Use "list". This is the single
+8. "Week One": from the Week One asks. Use "list". This is the single
    place open questions and Requires-Data items live.
-Any section whose content is naturally a five-stage sequence with named
-owners (e.g. VALID's five wins where they carry real weight in this plan)
-is a strong candidate for "gaterow" instead of "cards".`;
+Any other section whose content is naturally a multi-stage sequence with
+named owners is a strong candidate for "gaterow" instead of "cards".`;
 
 export async function POST(req: Request) {
   const { intake, probeAnswers, plan, shipClean } = (await req.json()) as {
@@ -79,6 +80,8 @@ ${DECK_VOICE} This is a distinct, later step from drafting.
 ${FULL_DECK_SHAPE_RULES}
 
 ${structureGuide}
+
+${RAIL_CHAPTER}
 
 Respond with ONLY this JSON shape, no prose, no markdown fence:
 {

@@ -11,6 +11,7 @@ export function formatIntakeVerbatim(intake: IntakeBlock): string {
     `TARGET PROVENANCE: ${intake.targetProvenance || "(none)"}`,
     `GEO: ${intake.geo || "(none)"}`,
     `PRICING MODEL: ${intake.pricingModel || "(none)"}`,
+    `ACCOUNT TEAM / DEAL ROLES: ${intake.accountTeamRoles || "(none)"}`,
     `REFERENCE MATERIAL: ${intake.referenceMaterial || "(none)"}`,
     `KNOWN COMPETITORS: ${intake.knownCompetitors || "(none)"}`,
     `DATA AVAILABLE: ${intake.dataAvailable || "(none)"}`,

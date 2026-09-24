@@ -34,3 +34,29 @@ Sharp, quantified, operator voice per §11: the deck is even less tolerant
 of padding than the plan itself. Zero category vocabulary. One idea per
 slide. No em dashes anywhere; use a comma, colon, semicolon, or parentheses
 instead.`;
+
+// Chris's own VALID Deal Model is field-tested IP he wants visible in every
+// deck this agent produces, not left to the model's discretion per plan.
+// The win definitions are generic (from doctrine §4.1); the owners are not,
+// they come from this specific plan's ACCOUNT TEAM / DEAL ROLES intake
+// field, never invented.
+export const RAIL_CHAPTER = `Every deck includes a chapter titled "The Rail", explaining the VALID deal
+maturation model. This chapter is mandatory, never optional, never cut for
+length, and always exactly these three slides in order:
+
+1. A "divider" slide for "The Rail".
+2. A "cards" slide (columns: 3), eyebrow along the lines of "What each win
+   requires". Five cards, one per VALID win, in order V, A, L, I, D: tag is
+   the single letter, title is the win's name (Validated, Aligned, Locked,
+   Invested, Documented), body is that win's one-sentence definition from
+   doctrine §4.1's VALID table, in plain words, not copied verbatim if the
+   doctrine phrasing reads as internal jargon.
+3. A "gaterow" slide, one gate per VALID win, in the same V/A/L/I/D order.
+   Each gate's "name" is the win; "detail" is what closes that win for THIS
+   specific plan, grounded in the plan's actual deal context, not the
+   generic definition restated; "owner" is who carries that win, drawn from
+   the intake's ACCOUNT TEAM / DEAL ROLES field. If that field describes
+   one person doing everything, every gate's owner is that person; never
+   invent named roles (a CTO, a CPO, a second AE) that weren't described.
+   gateLabel is "FORECAST GATE"; gateDetail states plainly that the gate
+   opens only once every win is documented, per §9.`;

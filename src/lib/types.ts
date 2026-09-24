@@ -10,6 +10,7 @@ export interface IntakeBlock {
   targetProvenance: string;
   geo: string;
   pricingModel: string;
+  accountTeamRoles: string;
   referenceMaterial: string;
   knownCompetitors: string;
   dataAvailable: string;
@@ -36,6 +37,7 @@ export const EMPTY_INTAKE: IntakeBlock = {
   targetProvenance: "",
   geo: "",
   pricingModel: "",
+  accountTeamRoles: "",
   referenceMaterial: "",
   knownCompetitors: "",
   dataAvailable: "",

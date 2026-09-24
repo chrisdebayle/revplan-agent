@@ -52,6 +52,7 @@ TARGET:                  [quota, growth %, ARR number, or "unknown"]  R
 TARGET PROVENANCE:       [top-down / bottom-up / unknown; if target known]
 GEO:
 PRICING MODEL:           [ARR / usage / consumption / platform / hybrid]
+ACCOUNT TEAM / DEAL ROLES: [who quotes and closes, who else gets pulled in and when]
 REFERENCE MATERIAL:      [JD, 10-K, investor deck, prior plan, SOW]
 KNOWN COMPETITORS:
 DATA AVAILABLE:          [client / internal modes: what is actually accessible]
@@ -61,6 +62,8 @@ OUTPUT FORMAT:           [markdown default]
 ```
 
 `TARGET` is required but "unknown" is a valid answer. An unknown target changes the plan as much as a known one: it means the seat holder will be setting it, which becomes a Phase 1 deliverable rather than a given.
+
+`ACCOUNT TEAM / DEAL ROLES` is not required. A solo seat holder who quotes, negotiates, and closes alone, pulling in specialist help ad hoc rather than through a fixed named roster, is a complete and valid answer, not a gap. Left blank, the agent defaults every VALID win (see §4.1) to the seat holder named in `ROLE / SEAT` rather than inventing a team that was never described.
 
 ### 2.2 Gap probe
 
@@ -119,6 +122,18 @@ Every requirement below has an owned, field-tested framework behind it. The agen
 | Stakeholder / power mapping | **VALID**, A (Political Win) | Champion and counter-political map, multi-threading, leadership-escalation trigger |
 | Positioning & why-us narrative | **Execution Value Thesis** | Recognition over claim, zero category vocabulary, displaced priority, one proof point |
 | Segment & problem validation *(pre-PMF exit route)* | **Lean Canvas** | Blocks 1–2, stage guidance, validation loop |
+
+**VALID's five wins, defined** (generic to the framework, not specific to any one plan):
+
+| Win | What it requires | Who typically carries it |
+|---|---|---|
+| **Validated** | Technical evaluator win: POC criteria set using the buyer's own technical resources, not assumed. | Whoever runs technical validation for this seat |
+| **Aligned** | Champion win: a champion selling internally, power map and multi-threading in place. | Whoever owns the buyer relationship day to day |
+| **Locked** | Sponsor win: a named project sponsor, a decision date, and the consequence of missing it. | Whoever manages executive alignment |
+| **Invested** | Economic buyer win: budget approved and confirmed direct, not inferred. | Whoever owns commercial terms |
+| **Documented** | Legal/procurement win: a redlined path to signature. | Whoever owns contracting |
+
+Every plan names who actually carries each win, drawn from `ACCOUNT TEAM / DEAL ROLES` in the intake block. Where that field is blank or describes a single seat holder doing all five, that is the honest answer: name the seat holder against every win rather than inventing a roster that does not exist for this plan.
 
 **Supporting reference:** *RVP Worked Example* is reference material, not a routed framework. Cite it under RVP for sequence assembly (one RVP per role, one trigger per account, E1–E4 construction) and for the failure-attribution table that separates a message problem from a list problem.
 

@@ -12,6 +12,7 @@ const FIELD_META: { key: keyof IntakeBlock; label: string; required?: boolean; p
   { key: "targetProvenance", label: "Target Provenance", placeholder: "top-down / bottom-up / unknown" },
   { key: "geo", label: "Geo" },
   { key: "pricingModel", label: "Pricing Model", placeholder: "ARR / usage / consumption / platform / hybrid" },
+  { key: "accountTeamRoles", label: "Account Team / Deal Roles", placeholder: "who quotes and closes, who else gets pulled in and when" },
   { key: "referenceMaterial", label: "Reference Material", placeholder: "JD, 10-K, investor deck, prior plan" },
   { key: "knownCompetitors", label: "Known Competitors" },
   { key: "dataAvailable", label: "Data Available", placeholder: "Client / Internal modes only" },
